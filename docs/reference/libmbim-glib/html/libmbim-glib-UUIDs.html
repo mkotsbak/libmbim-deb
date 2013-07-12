@@ -1,0 +1,604 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>UUIDs</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="libmbim-glib Reference Manual">
+<link rel="up" href="ch01.html" title="Core">
+<link rel="prev" href="libmbim-glib-Version-checks.html" title="Version checks">
+<link rel="next" href="libmbim-glib-Command-IDs.html" title="Command IDs">
+<meta name="generator" content="GTK-Doc V1.18.1 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="libmbim-glib-Version-checks.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">libmbim-glib Reference Manual</th>
+<td><a accesskey="n" href="libmbim-glib-Command-IDs.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#libmbim-glib-UUIDs.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#libmbim-glib-UUIDs.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#libmbim-glib-UUIDs.object-hierarchy" class="shortcut">Object Hierarchy</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="libmbim-glib-UUIDs"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="libmbim-glib-UUIDs.top_of_page"></a>UUIDs</span></h2>
+<p>UUIDs</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="libmbim-glib-UUIDs.synopsis"></a><h2>Synopsis</h2>
+<a name="MbimService"></a><a name="MbimContextType"></a><pre class="synopsis">enum                <a class="link" href="libmbim-glib-UUIDs.html#MbimService-enum" title="enum MbimService">MbimService</a>;
+enum                <a class="link" href="libmbim-glib-UUIDs.html#MbimContextType-enum" title="enum MbimContextType">MbimContextType</a>;
+                    <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid">MbimUuid</a>;
+#define             <a class="link" href="libmbim-glib-UUIDs.html#MBIM-UUID-INVALID:CAPS" title="MBIM_UUID_INVALID">MBIM_UUID_INVALID</a>
+#define             <a class="link" href="libmbim-glib-UUIDs.html#MBIM-UUID-BASIC-CONNECT:CAPS" title="MBIM_UUID_BASIC_CONNECT">MBIM_UUID_BASIC_CONNECT</a>
+#define             <a class="link" href="libmbim-glib-UUIDs.html#MBIM-UUID-SMS:CAPS" title="MBIM_UUID_SMS">MBIM_UUID_SMS</a>
+#define             <a class="link" href="libmbim-glib-UUIDs.html#MBIM-UUID-USSD:CAPS" title="MBIM_UUID_USSD">MBIM_UUID_USSD</a>
+#define             <a class="link" href="libmbim-glib-UUIDs.html#MBIM-UUID-PHONEBOOK:CAPS" title="MBIM_UUID_PHONEBOOK">MBIM_UUID_PHONEBOOK</a>
+#define             <a class="link" href="libmbim-glib-UUIDs.html#MBIM-UUID-STK:CAPS" title="MBIM_UUID_STK">MBIM_UUID_STK</a>
+#define             <a class="link" href="libmbim-glib-UUIDs.html#MBIM-UUID-AUTH:CAPS" title="MBIM_UUID_AUTH">MBIM_UUID_AUTH</a>
+#define             <a class="link" href="libmbim-glib-UUIDs.html#MBIM-UUID-DSS:CAPS" title="MBIM_UUID_DSS">MBIM_UUID_DSS</a>
+
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libmbim-glib-UUIDs.html#mbim-service-get-string" title="mbim_service_get_string ()">mbim_service_get_string</a>             (<em class="parameter"><code><a class="link" href="libmbim-glib-UUIDs.html#MbimService"><span class="type">MbimService</span></a> val</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libmbim-glib-UUIDs.html#mbim-context-type-get-string" title="mbim_context_type_get_string ()">mbim_context_type_get_string</a>        (<em class="parameter"><code><a class="link" href="libmbim-glib-UUIDs.html#MbimContextType"><span class="type">MbimContextType</span></a> val</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="libmbim-glib-UUIDs.html#mbim-uuid-cmp" title="mbim_uuid_cmp ()">mbim_uuid_cmp</a>                       (<em class="parameter"><code>const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a> *a</code></em>,
+                                                         <em class="parameter"><code>const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a> *b</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="libmbim-glib-UUIDs.html#mbim-uuid-get-printable" title="mbim_uuid_get_printable ()">mbim_uuid_get_printable</a>             (<em class="parameter"><code>const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a> *uuid</code></em>);
+const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="returnvalue">MbimUuid</span></a> *    <a class="link" href="libmbim-glib-UUIDs.html#mbim-uuid-from-service" title="mbim_uuid_from_service ()">mbim_uuid_from_service</a>              (<em class="parameter"><code><a class="link" href="libmbim-glib-UUIDs.html#MbimService"><span class="type">MbimService</span></a> service</code></em>);
+<a class="link" href="libmbim-glib-UUIDs.html#MbimService"><span class="returnvalue">MbimService</span></a>         <a class="link" href="libmbim-glib-UUIDs.html#mbim-uuid-to-service" title="mbim_uuid_to_service ()">mbim_uuid_to_service</a>                (<em class="parameter"><code>const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a> *uuid</code></em>);
+const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="returnvalue">MbimUuid</span></a> *    <a class="link" href="libmbim-glib-UUIDs.html#mbim-uuid-from-context-type" title="mbim_uuid_from_context_type ()">mbim_uuid_from_context_type</a>         (<em class="parameter"><code><a class="link" href="libmbim-glib-UUIDs.html#MbimContextType"><span class="type">MbimContextType</span></a> context_type</code></em>);
+<a class="link" href="libmbim-glib-UUIDs.html#MbimContextType"><span class="returnvalue">MbimContextType</span></a>     <a class="link" href="libmbim-glib-UUIDs.html#mbim-uuid-to-context-type" title="mbim_uuid_to_context_type ()">mbim_uuid_to_context_type</a>           (<em class="parameter"><code>const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a> *uuid</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="libmbim-glib-UUIDs.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GEnum
+   +----MbimService
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----MbimContextType
+</pre>
+</div>
+<div class="refsect1">
+<a name="libmbim-glib-UUIDs.description"></a><h2>Description</h2>
+<p>
+This section defines the data type for unique identifiers.
+</p>
+</div>
+<div class="refsect1">
+<a name="libmbim-glib-UUIDs.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="MbimService-enum"></a><h3>enum MbimService</h3>
+<pre class="programlisting">typedef enum {
+    MBIM_SERVICE_INVALID       = 0,
+    MBIM_SERVICE_BASIC_CONNECT = 1,
+    MBIM_SERVICE_SMS           = 2,
+    MBIM_SERVICE_USSD          = 3,
+    MBIM_SERVICE_PHONEBOOK     = 4,
+    MBIM_SERVICE_STK           = 5,
+    MBIM_SERVICE_AUTH          = 6,
+    MBIM_SERVICE_DSS           = 7,
+} MbimService;
+</pre>
+<p>
+Enumeration of the generic MBIM services.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="MBIM-SERVICE-INVALID:CAPS"></a><span class="term"><code class="literal">MBIM_SERVICE_INVALID</code></span></p></td>
+<td>Invalid service.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-SERVICE-BASIC-CONNECT:CAPS"></a><span class="term"><code class="literal">MBIM_SERVICE_BASIC_CONNECT</code></span></p></td>
+<td>Basic connectivity service.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-SERVICE-SMS:CAPS"></a><span class="term"><code class="literal">MBIM_SERVICE_SMS</code></span></p></td>
+<td>SMS messaging service.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-SERVICE-USSD:CAPS"></a><span class="term"><code class="literal">MBIM_SERVICE_USSD</code></span></p></td>
+<td>USSD service.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-SERVICE-PHONEBOOK:CAPS"></a><span class="term"><code class="literal">MBIM_SERVICE_PHONEBOOK</code></span></p></td>
+<td>Phonebook service.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-SERVICE-STK:CAPS"></a><span class="term"><code class="literal">MBIM_SERVICE_STK</code></span></p></td>
+<td>SIM toolkit service.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-SERVICE-AUTH:CAPS"></a><span class="term"><code class="literal">MBIM_SERVICE_AUTH</code></span></p></td>
+<td>Authentication service.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-SERVICE-DSS:CAPS"></a><span class="term"><code class="literal">MBIM_SERVICE_DSS</code></span></p></td>
+<td>Device Service Stream service.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MbimContextType-enum"></a><h3>enum MbimContextType</h3>
+<pre class="programlisting">typedef enum {
+    MBIM_CONTEXT_TYPE_INVALID     = 0,
+    MBIM_CONTEXT_TYPE_NONE        = 1,
+    MBIM_CONTEXT_TYPE_INTERNET    = 2,
+    MBIM_CONTEXT_TYPE_VPN         = 3,
+    MBIM_CONTEXT_TYPE_VOICE       = 4,
+    MBIM_CONTEXT_TYPE_VIDEO_SHARE = 5,
+    MBIM_CONTEXT_TYPE_PURCHASE    = 6,
+    MBIM_CONTEXT_TYPE_IMS         = 7,
+    MBIM_CONTEXT_TYPE_MMS         = 8,
+    MBIM_CONTEXT_TYPE_LOCAL       = 9,
+} MbimContextType;
+</pre>
+<p>
+Enumeration of the generic MBIM context types.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="MBIM-CONTEXT-TYPE-INVALID:CAPS"></a><span class="term"><code class="literal">MBIM_CONTEXT_TYPE_INVALID</code></span></p></td>
+<td>Invalid context type.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-CONTEXT-TYPE-NONE:CAPS"></a><span class="term"><code class="literal">MBIM_CONTEXT_TYPE_NONE</code></span></p></td>
+<td>Context not yet provisioned.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-CONTEXT-TYPE-INTERNET:CAPS"></a><span class="term"><code class="literal">MBIM_CONTEXT_TYPE_INTERNET</code></span></p></td>
+<td>Connection to the Internet.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-CONTEXT-TYPE-VPN:CAPS"></a><span class="term"><code class="literal">MBIM_CONTEXT_TYPE_VPN</code></span></p></td>
+<td>Connection to a VPN.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-CONTEXT-TYPE-VOICE:CAPS"></a><span class="term"><code class="literal">MBIM_CONTEXT_TYPE_VOICE</code></span></p></td>
+<td>Connection to a VoIP service.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-CONTEXT-TYPE-VIDEO-SHARE:CAPS"></a><span class="term"><code class="literal">MBIM_CONTEXT_TYPE_VIDEO_SHARE</code></span></p></td>
+<td>Connection to a video sharing service.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-CONTEXT-TYPE-PURCHASE:CAPS"></a><span class="term"><code class="literal">MBIM_CONTEXT_TYPE_PURCHASE</code></span></p></td>
+<td>Connection to an over-the-air activation site.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-CONTEXT-TYPE-IMS:CAPS"></a><span class="term"><code class="literal">MBIM_CONTEXT_TYPE_IMS</code></span></p></td>
+<td>Connection to IMS.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-CONTEXT-TYPE-MMS:CAPS"></a><span class="term"><code class="literal">MBIM_CONTEXT_TYPE_MMS</code></span></p></td>
+<td>Connection to MMS.
+</td>
+</tr>
+<tr>
+<td><p><a name="MBIM-CONTEXT-TYPE-LOCAL:CAPS"></a><span class="term"><code class="literal">MBIM_CONTEXT_TYPE_LOCAL</code></span></p></td>
+<td>A local.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MbimUuid"></a><h3>MbimUuid</h3>
+<pre class="programlisting">typedef struct _MbimUuid MbimUuid;</pre>
+<p>
+A UUID as defined in MBIM.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MBIM-UUID-INVALID:CAPS"></a><h3>MBIM_UUID_INVALID</h3>
+<pre class="programlisting">#define MBIM_UUID_INVALID mbim_uuid_from_service (MBIM_SERVICE_INVALID)
+</pre>
+<p>
+Get the UUID of the <a class="link" href="libmbim-glib-UUIDs.html#MBIM-SERVICE-INVALID:CAPS"><code class="literal">MBIM_SERVICE_INVALID</code></a> service.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MBIM-UUID-BASIC-CONNECT:CAPS"></a><h3>MBIM_UUID_BASIC_CONNECT</h3>
+<pre class="programlisting">#define MBIM_UUID_BASIC_CONNECT mbim_uuid_from_service (MBIM_SERVICE_BASIC_CONNECT)
+</pre>
+<p>
+Get the UUID of the <a class="link" href="libmbim-glib-UUIDs.html#MBIM-SERVICE-BASIC-CONNECT:CAPS"><code class="literal">MBIM_SERVICE_BASIC_CONNECT</code></a> service.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MBIM-UUID-SMS:CAPS"></a><h3>MBIM_UUID_SMS</h3>
+<pre class="programlisting">#define MBIM_UUID_SMS mbim_uuid_from_service (MBIM_SERVICE_SMS)
+</pre>
+<p>
+Get the UUID of the <a class="link" href="libmbim-glib-UUIDs.html#MBIM-SERVICE-SMS:CAPS"><code class="literal">MBIM_SERVICE_SMS</code></a> service.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MBIM-UUID-USSD:CAPS"></a><h3>MBIM_UUID_USSD</h3>
+<pre class="programlisting">#define MBIM_UUID_USSD mbim_uuid_from_service (MBIM_SERVICE_USSD)
+</pre>
+<p>
+Get the UUID of the <a class="link" href="libmbim-glib-UUIDs.html#MBIM-SERVICE-USSD:CAPS"><code class="literal">MBIM_SERVICE_USSD</code></a> service.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MBIM-UUID-PHONEBOOK:CAPS"></a><h3>MBIM_UUID_PHONEBOOK</h3>
+<pre class="programlisting">#define MBIM_UUID_PHONEBOOK mbim_uuid_from_service (MBIM_SERVICE_PHONEBOOK)
+</pre>
+<p>
+Get the UUID of the <a class="link" href="libmbim-glib-UUIDs.html#MBIM-SERVICE-PHONEBOOK:CAPS"><code class="literal">MBIM_SERVICE_PHONEBOOK</code></a> service.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MBIM-UUID-STK:CAPS"></a><h3>MBIM_UUID_STK</h3>
+<pre class="programlisting">#define MBIM_UUID_STK mbim_uuid_from_service (MBIM_SERVICE_STK)
+</pre>
+<p>
+Get the UUID of the <a class="link" href="libmbim-glib-UUIDs.html#MBIM-SERVICE-STK:CAPS"><code class="literal">MBIM_SERVICE_STK</code></a> service.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MBIM-UUID-AUTH:CAPS"></a><h3>MBIM_UUID_AUTH</h3>
+<pre class="programlisting">#define MBIM_UUID_AUTH mbim_uuid_from_service (MBIM_SERVICE_AUTH)
+</pre>
+<p>
+Get the UUID of the <a class="link" href="libmbim-glib-UUIDs.html#MBIM-SERVICE-AUTH:CAPS"><code class="literal">MBIM_SERVICE_AUTH</code></a> service.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="MBIM-UUID-DSS:CAPS"></a><h3>MBIM_UUID_DSS</h3>
+<pre class="programlisting">#define MBIM_UUID_DSS mbim_uuid_from_service (MBIM_SERVICE_DSS)
+</pre>
+<p>
+Get the UUID of the <a class="link" href="libmbim-glib-UUIDs.html#MBIM-SERVICE-DSS:CAPS"><code class="literal">MBIM_SERVICE_DSS</code></a> service.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="mbim-service-get-string"></a><h3>mbim_service_get_string ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       mbim_service_get_string             (<em class="parameter"><code><a class="link" href="libmbim-glib-UUIDs.html#MbimService"><span class="type">MbimService</span></a> val</code></em>);</pre>
+<p>
+Gets the nickname string for the <a class="link" href="libmbim-glib-UUIDs.html#MbimService"><span class="type">MbimService</span></a> specified at <em class="parameter"><code>val</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td>a MbimService.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a string with the nickname, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if not found. Do not free the returned value. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="mbim-context-type-get-string"></a><h3>mbim_context_type_get_string ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       mbim_context_type_get_string        (<em class="parameter"><code><a class="link" href="libmbim-glib-UUIDs.html#MbimContextType"><span class="type">MbimContextType</span></a> val</code></em>);</pre>
+<p>
+Gets the nickname string for the <a class="link" href="libmbim-glib-UUIDs.html#MbimContextType"><span class="type">MbimContextType</span></a> specified at <em class="parameter"><code>val</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>val</code></em> :</span></p></td>
+<td>a MbimContextType.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a string with the nickname, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if not found. Do not free the returned value. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="mbim-uuid-cmp"></a><h3>mbim_uuid_cmp ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            mbim_uuid_cmp                       (<em class="parameter"><code>const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a> *a</code></em>,
+                                                         <em class="parameter"><code>const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a> *b</code></em>);</pre>
+<p>
+Compare two <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><code class="literal">MbimUuid</code></a> values.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>a</code></em> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>b</code></em> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>a</code></em> and <em class="parameter"><code>b</code></em> are equal, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="mbim-uuid-get-printable"></a><h3>mbim_uuid_get_printable ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             mbim_uuid_get_printable             (<em class="parameter"><code>const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a> *uuid</code></em>);</pre>
+<p>
+Get a string with the UUID.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>uuid</code></em> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a newly allocated string, which should be freed with <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="mbim-uuid-from-service"></a><h3>mbim_uuid_from_service ()</h3>
+<pre class="programlisting">const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="returnvalue">MbimUuid</span></a> *    mbim_uuid_from_service              (<em class="parameter"><code><a class="link" href="libmbim-glib-UUIDs.html#MbimService"><span class="type">MbimService</span></a> service</code></em>);</pre>
+<p>
+Get the UUID corresponding to <em class="parameter"><code>service</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>service</code></em> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimService"><span class="type">MbimService</span></a>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="mbim-uuid-to-service"></a><h3>mbim_uuid_to_service ()</h3>
+<pre class="programlisting"><a class="link" href="libmbim-glib-UUIDs.html#MbimService"><span class="returnvalue">MbimService</span></a>         mbim_uuid_to_service                (<em class="parameter"><code>const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a> *uuid</code></em>);</pre>
+<p>
+Get the service corresponding to <em class="parameter"><code>uuid</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>uuid</code></em> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimService"><span class="type">MbimService</span></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="mbim-uuid-from-context-type"></a><h3>mbim_uuid_from_context_type ()</h3>
+<pre class="programlisting">const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="returnvalue">MbimUuid</span></a> *    mbim_uuid_from_context_type         (<em class="parameter"><code><a class="link" href="libmbim-glib-UUIDs.html#MbimContextType"><span class="type">MbimContextType</span></a> context_type</code></em>);</pre>
+<p>
+Get the UUID corresponding to <em class="parameter"><code>context_type</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>context_type</code></em> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimContextType"><span class="type">MbimContextType</span></a>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="mbim-uuid-to-context-type"></a><h3>mbim_uuid_to_context_type ()</h3>
+<pre class="programlisting"><a class="link" href="libmbim-glib-UUIDs.html#MbimContextType"><span class="returnvalue">MbimContextType</span></a>     mbim_uuid_to_context_type           (<em class="parameter"><code>const <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a> *uuid</code></em>);</pre>
+<p>
+Get the context type corresponding to <em class="parameter"><code>uuid</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>uuid</code></em> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimUuid" title="MbimUuid"><span class="type">MbimUuid</span></a>.</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="libmbim-glib-UUIDs.html#MbimContextType"><span class="type">MbimContextType</span></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.18.1</div>
+</body>
+</html>

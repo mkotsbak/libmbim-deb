@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Object Hierarchy</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="libmbim-glib Reference Manual">
+<link rel="up" href="index.html" title="libmbim-glib Reference Manual">
+<link rel="prev" href="libmbim-glib-DSS.html" title="DSS">
+<link rel="next" href="api-index-full.html" title="API Index">
+<meta name="generator" content="GTK-Doc V1.18.1 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
+<td><a accesskey="p" href="libmbim-glib-DSS.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td> </td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">libmbim-glib Reference Manual</th>
+<td><a accesskey="n" href="api-index-full.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="chapter">
+<div class="titlepage"><div><div><h1 class="title">
+<a name="object-tree"></a>Object Hierarchy</h1></div></div></div>
+<pre class="screen">
+    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+        <a class="link" href="MbimDevice.html" title="MbimDevice">MbimDevice</a>
+    GEnum
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimActivationCommand">MbimActivationCommand</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimActivationState">MbimActivationState</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimAuthProtocol">MbimAuthProtocol</a>
+        <a class="link" href="libmbim-glib-Command-IDs.html#MbimCidAuth">MbimCidAuth</a>
+        <a class="link" href="libmbim-glib-Command-IDs.html#MbimCidBasicConnect">MbimCidBasicConnect</a>
+        <a class="link" href="libmbim-glib-Command-IDs.html#MbimCidDss">MbimCidDss</a>
+        <a class="link" href="libmbim-glib-Command-IDs.html#MbimCidPhonebook">MbimCidPhonebook</a>
+        <a class="link" href="libmbim-glib-Command-IDs.html#MbimCidSms">MbimCidSms</a>
+        <a class="link" href="libmbim-glib-Command-IDs.html#MbimCidStk">MbimCidStk</a>
+        <a class="link" href="libmbim-glib-Command-IDs.html#MbimCidUssd">MbimCidUssd</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimCompression">MbimCompression</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimContextIpType">MbimContextIpType</a>
+        <a class="link" href="libmbim-glib-UUIDs.html#MbimContextType">MbimContextType</a>
+        <a class="link" href="libmbim-glib-Errors.html#MbimCoreError">MbimCoreError</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimDeviceType">MbimDeviceType</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimDssLinkState">MbimDssLinkState</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimEmergencyModeState">MbimEmergencyModeState</a>
+        <a class="link" href="MbimMessage.html#MbimMessageCommandType">MbimMessageCommandType</a>
+        <a class="link" href="MbimMessage.html#MbimMessageType">MbimMessageType</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimNetworkIdleHintState">MbimNetworkIdleHintState</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimNwError">MbimNwError</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimPacketServiceAction">MbimPacketServiceAction</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimPacketServiceState">MbimPacketServiceState</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimPhonebookFlag">MbimPhonebookFlag</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimPhonebookState">MbimPhonebookState</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimPhonebookWriteFlag">MbimPhonebookWriteFlag</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimPinFormat">MbimPinFormat</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimPinMode">MbimPinMode</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimPinOperation">MbimPinOperation</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimPinState">MbimPinState</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimPinType">MbimPinType</a>
+        <a class="link" href="libmbim-glib-Errors.html#MbimProtocolError">MbimProtocolError</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimRadioSwitchState">MbimRadioSwitchState</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimRegisterAction">MbimRegisterAction</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimRegisterMode">MbimRegisterMode</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimRegisterState">MbimRegisterState</a>
+        <a class="link" href="libmbim-glib-UUIDs.html#MbimService">MbimService</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimSmsCdmaEncoding">MbimSmsCdmaEncoding</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimSmsCdmaLang">MbimSmsCdmaLang</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimSmsFlag">MbimSmsFlag</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimSmsFormat">MbimSmsFormat</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimSmsStatusFlag">MbimSmsStatusFlag</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimSmsStatus">MbimSmsStatus</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimSmsStorageState">MbimSmsStorageState</a>
+        <a class="link" href="libmbim-glib-Errors.html#MbimStatusError">MbimStatusError</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimStkPacProfile">MbimStkPacProfile</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimStkPacType">MbimStkPacType</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimSubscriberReadyState">MbimSubscriberReadyState</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimUssdAction">MbimUssdAction</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimUssdResponse">MbimUssdResponse</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimUssdSessionState">MbimUssdSessionState</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimVisibleProvidersAction">MbimVisibleProvidersAction</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimVoiceCallState">MbimVoiceCallState</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimVoiceClass">MbimVoiceClass</a>
+    GFlags
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimCellularClass">MbimCellularClass</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimCtrlCaps">MbimCtrlCaps</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimDataClass">MbimDataClass</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimIPConfigurationAvailableFlag">MbimIPConfigurationAvailableFlag</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimProviderState">MbimProviderState</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimReadyInfoFlag">MbimReadyInfoFlag</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimRegistrationFlag">MbimRegistrationFlag</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimSimClass">MbimSimClass</a>
+        <a class="link" href="libmbim-glib-Enumerations-and-Flags.html#MbimSmsCaps">MbimSmsCaps</a>
+    GBoxed
+        <a class="link" href="MbimMessage.html" title="MbimMessage">MbimMessage</a>
+</pre>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.18.1</div>
+</body>
+</html>
