@@ -1,0 +1,9 @@
+Document: libmbim
+Title: Debian libmbim Manual
+Author: The libmbim-glib authors
+Abstract: API documentation of libmbim-glib.
+Section: doc
+
+Format: HTML
+Index: /usr/share/gtk-doc/html/libmbim-glib/index.html
+Files: /usr/share/gtk-doc/html/libmbim-glib/*.html

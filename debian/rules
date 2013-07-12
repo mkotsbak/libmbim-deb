@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ --with autoreconf
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		--with-tests \
+		--enable-gtk-doc \
+		--enable-gtk-doc-html
+
+#override_dh_strip:
+#	dh_strip --dbg-package=libqmi-glib0-dbg
+
+generate_manpages: binary-arch binary
+	help2man --no-info --name "Control MBIM devices" debian/tmp/usr/bin/mbimcli --help-option "--help-all" > debian/mbimcli.1
+
+.PHONY: generate_manpages

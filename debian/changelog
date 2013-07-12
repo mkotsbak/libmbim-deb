@@ -1,0 +1,5 @@
+libmbim (1.4.0-1) UNRELEASED; urgency=low
+
+  * Initial release. (Closes: #716765)
+
+ -- Thomas Bechtold <thomasbechtold@jpberlin.de>  Fri, 12 Jul 2013 09:40:24 +0200
