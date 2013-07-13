@@ -13,6 +13,7 @@ Build-Depends: debhelper (>= 9),
 Standards-Version: 3.9.4
 Vcs-Git: git://git.debian.org/git/pkg-utopia/libmbim.git
 Vcs-Browser: http://git.debian.org/?p=pkg-utopia/libmbim.git;a=summary
+Homepage: http://www.freedesktop.org/wiki/Software/libmbim/
 
 Package: libmbim-glib0
 Section: libs
