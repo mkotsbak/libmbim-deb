@@ -1,8 +1,7 @@
 Source: libmbim
 Section: libs
 Priority: optional
-Maintainer: Utopia Maintenance Team <pkg-utopia-maintainers@lists.alioth.debian.org>
-Uploaders: Thomas Bechtold <thomasbechtold@jpberlin.de>
+Maintainer: Thomas Bechtold <thomasbechtold@jpberlin.de>
 Build-Depends: debhelper (>= 9),
                dh-autoreconf,
                pkg-config,
@@ -11,8 +10,8 @@ Build-Depends: debhelper (>= 9),
                gtk-doc-tools,
                libglib2.0-doc
 Standards-Version: 3.9.4
-Vcs-Git: git://git.debian.org/git/pkg-utopia/libmbim.git
-Vcs-Browser: http://git.debian.org/?p=pkg-utopia/libmbim.git;a=summary
+Vcs-Git: git://git.debian.org/git/collab-maint/libmbim.git
+Vcs-Browser: http://git.debian.org/?p=collab-maint/libmbim.git;a=summary
 Homepage: http://www.freedesktop.org/wiki/Software/libmbim/
 
 Package: libmbim-glib0
