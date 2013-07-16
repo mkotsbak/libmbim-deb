@@ -6,9 +6,17 @@ Files: *
 Copyright: 2013 Aleksander Morgado <aleksander@gnu.org>
 License: GPL-2+
 
+Files: build-aux/mbim-codegen/*.py
+Copyright: 2013 Aleksander Morgado <aleksander@gnu.org>
+License: LGPL-2+
+
 Files: libmbim-glib/*
 Copyright: 2013 Aleksander Morgado <aleksander@gnu.org>
 License: LGPL-2+
+
+Files: libmbim-glib/test/*
+Copyright: 2013 Aleksander Morgado <aleksander@gnu.org>
+License: GPL-2+
 
 License: GPL-2+
  This package is free software; you can redistribute it and/or modify
