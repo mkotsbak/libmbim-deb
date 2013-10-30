@@ -29,7 +29,7 @@ Section: libdevel
 Architecture: any
 Multi-Arch: same
 Depends: libmbim-glib0 (= ${binary:Version}), ${misc:Depends}, libglib2.0-dev
-Suggests: devhelp
+Suggests: libmbim-glib-doc
 Description: Header files for adding MBIM support to applications that use glib
  libmbim is a glib-based library for talking to WWAN modems and devices
  which speak the Mobile Interface Broadband Model (MBIM) protocol.
@@ -37,6 +37,18 @@ Description: Header files for adding MBIM support to applications that use glib
  This package contains the header, pkg-config and API documentation files for
  development applications using MBIM functionality from applications
  that use glib.
+
+Package: libmbim-glib-doc
+Section: doc
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Suggests: devhelp
+Description: API documentation for the MBIM protocol library
+ libmbim is a glib-based library for talking to WWAN modems and devices
+ which speak the Mobile Interface Broadband Model (MBIM) protocol.
+ .
+ This package contains the API reference for libmbim-glib.
 
 Package: libmbim-utils
 Section: net

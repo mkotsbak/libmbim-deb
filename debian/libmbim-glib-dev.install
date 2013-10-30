@@ -1,5 +1,4 @@
 usr/include/*
 usr/lib/*/pkgconfig/*
-usr/share/gtk-doc/html/libmbim-glib
 usr/lib/*/lib*.a
 usr/lib/*/*.so

@@ -1,3 +1,9 @@
+libmbim (1.4.0-2) UNRELEASED; urgency=low
+
+  * Fix Multi-Arch: same problem with seperated doc package (Closes: #728195)
+
+ -- Thomas Bechtold <thomasbechtold@jpberlin.de>  Wed, 30 Oct 2013 07:07:07 +0100
+
 libmbim (1.4.0-1) unstable; urgency=low
 
   * Initial release. (Closes: #716765)
