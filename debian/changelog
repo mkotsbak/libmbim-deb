@@ -1,4 +1,4 @@
-libmbim (1.6.0-1) UNRELEASED; urgency=low
+libmbim (1.6.0-1) unstable; urgency=low
 
   * New upstream release (Closes: #731908)
   * Fix Multi-Arch: same problem with separated doc package (Closes: #728195)
@@ -10,7 +10,7 @@ libmbim (1.6.0-1) UNRELEASED; urgency=low
     upstream.
   * debian/control: Use Debian email address in maintainer field.
 
- -- Thomas Bechtold <thomasbechtold@jpberlin.de>  Wed, 30 Oct 2013 07:07:07 +0100
+ -- Thomas Bechtold <toabctl@debian.org>  Mon, 16 Dec 2013 19:03:17 +0100
 
 libmbim (1.4.0-1) unstable; urgency=low
 
