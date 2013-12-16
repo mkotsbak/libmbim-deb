@@ -2,7 +2,8 @@
 
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
-# Foundation, version 2.
+# Foundation, either version 2 of the License, or (at your option) any later
+# version.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -23,7 +24,40 @@ print_usage ()
     echo "usage: $0 [DEVICE] [COMMAND]"
 }
 
+help ()
+{
+    echo "Usage: mbim-network [OPTIONS] [DEVICE] [COMMAND] - Simple network management of MBIM devices"
+    echo
+    echo "Commands:"
+    echo "  start           Start network connection"
+    echo "  stop            Stop network connection"
+    echo "  status          Query network connection status"
+    echo
+    echo "Options:"
+    echo "  --help          Show help options"
+    echo "  --version       Show version"
+    echo
+}
+
+version ()
+{
+    echo "mbim-network @VERSION@"
+    echo "Copyright (2013) Aleksander Morgado"
+    echo "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl-2.0.html>"
+    echo "This is free software: you are free to change and redistribute it."
+    echo "There is NO WARRANTY, to the extent permitted by law."
+    echo
+}
+
 if [ $# -ne 2 ]; then
+    if [ $1 == "--help" ]; then
+        help
+        exit 0
+    elif [ $1 == "--version" ]; then
+        version
+        exit 0
+    fi
+
     echo "error: missing arguments" 1>&2
     print_usage
     exit 255
@@ -38,7 +72,7 @@ load_profile ()
 {
     if [ -f $PROFILE_FILE ]; then
         echo "Loading profile..."
-        source $PROFILE_FILE
+        . $PROFILE_FILE
 
         if [ "x$APN" != "x" ]; then
             echo "    APN: $APN"
@@ -72,7 +106,7 @@ load_state ()
 {
     if [ -f $STATE_FILE ]; then
         echo "Loading previous state..."
-        source $STATE_FILE
+        . $STATE_FILE
 
         if [ "x$TRID" != "x" ]; then
             echo "    Previous Transaction ID: $TRID"
