@@ -16,11 +16,12 @@ test_uuid_SOURCES = \
 test_uuid_CPPFLAGS = \
 	$(LIBMBIM_GLIB_CFLAGS) \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libmbim-glib \
-	-I$(top_builddir)/libmbim-glib \
+	-I$(top_srcdir)/src/libmbim-glib \
+	-I$(top_builddir)/src/libmbim-glib \
 	-DLIBMBIM_GLIB_COMPILATION
 test_uuid_LDADD = \
-	$(top_builddir)/libmbim-glib/libmbim-glib.la \
+	$(top_builddir)/src/libmbim-glib/libmbim-glib-core.la \
+	$(top_builddir)/src/libmbim-glib/generated/libmbim-glib-generated.la \
 	$(LIBMBIM_GLIB_LIBS)
 
 test_cid_SOURCES = \
@@ -28,11 +29,12 @@ test_cid_SOURCES = \
 test_cid_CPPFLAGS = \
 	$(LIBMBIM_GLIB_CFLAGS) \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libmbim-glib \
-	-I$(top_builddir)/libmbim-glib \
+	-I$(top_srcdir)/src/libmbim-glib \
+	-I$(top_builddir)/src/libmbim-glib \
 	-DLIBMBIM_GLIB_COMPILATION
 test_cid_LDADD = \
-	$(top_builddir)/libmbim-glib/libmbim-glib.la \
+	$(top_builddir)/src/libmbim-glib/libmbim-glib-core.la \
+	$(top_builddir)/src/libmbim-glib/generated/libmbim-glib-generated.la \
 	$(LIBMBIM_GLIB_LIBS)
 
 test_message_SOURCES = \
@@ -40,11 +42,12 @@ test_message_SOURCES = \
 test_message_CPPFLAGS = \
 	$(LIBMBIM_GLIB_CFLAGS) \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libmbim-glib \
-	-I$(top_builddir)/libmbim-glib \
+	-I$(top_srcdir)/src/libmbim-glib \
+	-I$(top_builddir)/src/libmbim-glib \
 	-DLIBMBIM_GLIB_COMPILATION
 test_message_LDADD = \
-	$(top_builddir)/libmbim-glib/libmbim-glib.la \
+	$(top_builddir)/src/libmbim-glib/libmbim-glib-core.la \
+	$(top_builddir)/src/libmbim-glib/generated/libmbim-glib-generated.la \
 	$(LIBMBIM_GLIB_LIBS)
 
 test_fragment_SOURCES = \
@@ -52,11 +55,12 @@ test_fragment_SOURCES = \
 test_fragment_CPPFLAGS = \
 	$(LIBMBIM_GLIB_CFLAGS) \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libmbim-glib \
-	-I$(top_builddir)/libmbim-glib \
+	-I$(top_srcdir)/src/libmbim-glib \
+	-I$(top_builddir)/src/libmbim-glib \
 	-DLIBMBIM_GLIB_COMPILATION
 test_fragment_LDADD = \
-	$(top_builddir)/libmbim-glib/libmbim-glib.la \
+	$(top_builddir)/src/libmbim-glib/libmbim-glib-core.la \
+	$(top_builddir)/src/libmbim-glib/generated/libmbim-glib-generated.la \
 	$(LIBMBIM_GLIB_LIBS)
 
 test_message_parser_SOURCES = \
@@ -64,12 +68,13 @@ test_message_parser_SOURCES = \
 test_message_parser_CPPFLAGS = \
 	$(LIBMBIM_GLIB_CFLAGS) \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libmbim-glib \
-	-I$(top_builddir)/libmbim-glib \
-	-I$(top_builddir)/libmbim-glib/generated \
+	-I$(top_srcdir)/src/libmbim-glib \
+	-I$(top_builddir)/src/libmbim-glib \
+	-I$(top_builddir)/src/libmbim-glib/generated \
 	-DLIBMBIM_GLIB_COMPILATION
 test_message_parser_LDADD = \
-	$(top_builddir)/libmbim-glib/libmbim-glib.la \
+	$(top_builddir)/src/libmbim-glib/libmbim-glib-core.la \
+	$(top_builddir)/src/libmbim-glib/generated/libmbim-glib-generated.la \
 	$(LIBMBIM_GLIB_LIBS)
 
 test_message_builder_SOURCES = \
@@ -77,10 +82,11 @@ test_message_builder_SOURCES = \
 test_message_builder_CPPFLAGS = \
 	$(LIBMBIM_GLIB_CFLAGS) \
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/libmbim-glib \
-	-I$(top_builddir)/libmbim-glib \
-	-I$(top_builddir)/libmbim-glib/generated \
+	-I$(top_srcdir)/src/libmbim-glib \
+	-I$(top_builddir)/src/libmbim-glib \
+	-I$(top_builddir)/src/libmbim-glib/generated \
 	-DLIBMBIM_GLIB_COMPILATION
 test_message_builder_LDADD = \
-	$(top_builddir)/libmbim-glib/libmbim-glib.la \
+	$(top_builddir)/src/libmbim-glib/libmbim-glib-core.la \
+	$(top_builddir)/src/libmbim-glib/generated/libmbim-glib-generated.la \
 	$(LIBMBIM_GLIB_LIBS)
