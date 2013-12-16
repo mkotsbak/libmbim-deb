@@ -1,6 +1,13 @@
-libmbim (1.4.0-2) UNRELEASED; urgency=low
+libmbim (1.6.0-1) UNRELEASED; urgency=low
 
-  * Fix Multi-Arch: same problem with seperated doc package (Closes: #728195)
+  * New upstream release (Closes: #731908)
+  * Fix Multi-Arch: same problem with separated doc package (Closes: #728195)
+  * debian/patches/0001-build-filter-out-non-public-symbols.patch: Dropped,
+    applied upstream.
+  * debian/libmbim-utils.install: Provide mbim-network binary.
+  * debian/libmbim-utils.manpages: Install manpages provided by upstream.
+  * debian/rules: manpage creation no longer needed. manpages are provided by
+    upstream.
 
  -- Thomas Bechtold <thomasbechtold@jpberlin.de>  Wed, 30 Oct 2013 07:07:07 +0100
 

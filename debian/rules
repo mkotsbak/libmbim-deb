@@ -11,8 +11,3 @@ override_dh_auto_configure:
 
 #override_dh_strip:
 #	dh_strip --dbg-package=libqmi-glib0-dbg
-
-generate_manpages: binary-arch binary
-	help2man --no-info --name "Control MBIM devices" debian/tmp/usr/bin/mbimcli --help-option "--help-all" > debian/mbimcli.1
-
-.PHONY: generate_manpages

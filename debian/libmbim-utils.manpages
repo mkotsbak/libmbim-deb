@@ -1,1 +1,2 @@
-debian/mbimcli.1
+debian/tmp/usr/share/man/man1/mbim-network.1
+debian/tmp/usr/share/man/man1/mbimcli.1
