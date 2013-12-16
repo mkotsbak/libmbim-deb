@@ -8,6 +8,7 @@ libmbim (1.6.0-1) UNRELEASED; urgency=low
   * debian/libmbim-utils.manpages: Install manpages provided by upstream.
   * debian/rules: manpage creation no longer needed. manpages are provided by
     upstream.
+  * debian/control: Use Debian email address in maintainer field.
 
  -- Thomas Bechtold <thomasbechtold@jpberlin.de>  Wed, 30 Oct 2013 07:07:07 +0100
 

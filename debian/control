@@ -1,7 +1,7 @@
 Source: libmbim
 Section: libs
 Priority: optional
-Maintainer: Thomas Bechtold <thomasbechtold@jpberlin.de>
+Maintainer: Thomas Bechtold <toabctl@debian.org>
 Build-Depends: debhelper (>= 9),
                dh-autoreconf,
                pkg-config,
