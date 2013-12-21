@@ -1,3 +1,12 @@
+libmbim (1.6.0-2) UNRELEASED; urgency=medium
+
+  * debian/copyright: Mention GFDL-1.3+ license which is used for
+    documentation (Closes: #732527).
+  * debian/control: Bump Standards-Version to 3.9.5. No further changes
+    needed.
+
+ -- Thomas Bechtold <toabctl@debian.org>  Sat, 21 Dec 2013 15:03:55 +0100
+
 libmbim (1.6.0-1) unstable; urgency=low
 
   * New upstream release (Closes: #731908)
