@@ -267,11 +267,14 @@ device_store_transaction (MbimDevice       *self,
     tr->wait_ctx->transaction_id = tr->transaction_id;
     tr->wait_ctx->type = type;
 
-    tr->timeout_id = g_timeout_add (timeout_ms,
-                                    (GSourceFunc)transaction_timed_out,
-                                    tr->wait_ctx);
+    /* don't add timeout if one already exists */
+    if (!tr->timeout_id) {
+        tr->timeout_id = g_timeout_add (timeout_ms,
+                                        (GSourceFunc)transaction_timed_out,
+                                        tr->wait_ctx);
+    }
 
-    if (tr->cancellable) {
+    if (tr->cancellable && !tr->cancellable_id) {
         tr->cancellable_id = g_cancellable_connect (tr->cancellable,
                                                     (GCallback)transaction_cancelled,
                                                     tr->wait_ctx,

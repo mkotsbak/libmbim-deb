@@ -43,6 +43,7 @@ static Context *ctx;
 static gboolean  query_device_caps_flag;
 static gboolean  query_subscriber_ready_status_flag;
 static gboolean  query_radio_state_flag;
+static gchar    *set_radio_state_str;
 static gboolean  query_device_services_flag;
 static gboolean  query_pin_flag;
 static gchar    *set_pin_enter_str;
@@ -76,6 +77,10 @@ static GOptionEntry entries[] = {
     { "query-radio-state", 0, 0, G_OPTION_ARG_NONE, &query_radio_state_flag,
       "Query radio state",
       NULL
+    },
+    { "set-radio-state", 0, 0, G_OPTION_ARG_STRING, &set_radio_state_str,
+      "Set radio state",
+      "[(on|off)]"
     },
     { "query-device-services", 0, 0, G_OPTION_ARG_NONE, &query_device_services_flag,
       "Query device services",
@@ -163,16 +168,16 @@ static GOptionEntry entries[] = {
 GOptionGroup *
 mbimcli_basic_connect_get_option_group (void)
 {
-	GOptionGroup *group;
+    GOptionGroup *group;
 
-	group = g_option_group_new ("basic-connect",
-	                            "Basic Connect options",
-	                            "Show Basic Connect Service options",
-	                            NULL,
-	                            NULL);
-	g_option_group_add_entries (group, entries);
+    group = g_option_group_new ("basic-connect",
+                                "Basic Connect options",
+                                "Show Basic Connect Service options",
+                                NULL,
+                                NULL);
+    g_option_group_add_entries (group, entries);
 
-	return group;
+    return group;
 }
 
 gboolean
@@ -187,6 +192,7 @@ mbimcli_basic_connect_options_enabled (void)
     n_actions = (query_device_caps_flag +
                  query_subscriber_ready_status_flag +
                  query_radio_state_flag +
+                 !!set_radio_state_str +
                  query_device_services_flag +
                  query_pin_flag +
                  !!set_pin_enter_str +
@@ -265,9 +271,11 @@ query_device_caps_ready (MbimDevice   *device,
     gchar *hardware_info;
 
     response = mbim_device_command_finish (device, res, &error);
-    if (!response) {
+    if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -295,14 +303,11 @@ query_device_caps_ready (MbimDevice   *device,
 
     device_type_str = mbim_device_type_get_string (device_type);
     cellular_class_str = mbim_cellular_class_build_string_from_mask (cellular_class);
-    voice_class_str = mbim_device_type_get_string (voice_class);
+    voice_class_str = mbim_voice_class_get_string (voice_class);
     sim_class_str = mbim_sim_class_build_string_from_mask (sim_class);
     data_class_str = mbim_data_class_build_string_from_mask (data_class);
     sms_caps_str = mbim_sms_caps_build_string_from_mask (sms_caps);
     ctrl_caps_str = mbim_ctrl_caps_build_string_from_mask (ctrl_caps);
-
-#undef VALIDATE_UNKNOWN
-#define VALIDATE_UNKNOWN(str) (str ? str : "unknown")
 
     g_print ("[%s] Device capabilities retrieved:\n"
              "\t      Device type: '%s'\n"
@@ -362,9 +367,11 @@ query_subscriber_ready_status_ready (MbimDevice   *device,
     gchar *telephone_numbers_str;
 
     response = mbim_device_command_finish (device, res, &error);
-    if (!response) {
+    if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -387,9 +394,6 @@ query_subscriber_ready_status_ready (MbimDevice   *device,
     telephone_numbers_str = (telephone_numbers ? g_strjoinv (", ", telephone_numbers) : NULL);
     ready_state_str = mbim_subscriber_ready_state_get_string (ready_state);
     ready_info_str = mbim_ready_info_flag_build_string_from_mask (ready_info);
-
-#undef VALIDATE_UNKNOWN
-#define VALIDATE_UNKNOWN(str) (str ? str : "unknown")
 
     g_print ("[%s] Subscriber ready status retrieved:\n"
              "\t      Ready state: '%s'\n"
@@ -426,9 +430,11 @@ query_radio_state_ready (MbimDevice   *device,
     const gchar *software_radio_state_str;
 
     response = mbim_device_command_finish (device, res, &error);
-    if (!response) {
+    if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -446,9 +452,6 @@ query_radio_state_ready (MbimDevice   *device,
 
     hardware_radio_state_str = mbim_radio_switch_state_get_string (hardware_radio_state);
     software_radio_state_str = mbim_radio_switch_state_get_string (software_radio_state);
-
-#undef VALIDATE_UNKNOWN
-#define VALIDATE_UNKNOWN(str) (str ? str : "unknown")
 
     g_print ("[%s] Radio state retrieved:\n"
              "\t     Hardware Radio State: '%s'\n"
@@ -472,9 +475,11 @@ query_device_services_ready (MbimDevice   *device,
     guint32 max_dss_sessions;
 
     response = mbim_device_command_finish (device, res, &error);
-    if (!response) {
+    if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -565,6 +570,8 @@ pin_ready (MbimDevice   *device,
     if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -584,9 +591,6 @@ pin_ready (MbimDevice   *device,
     if (GPOINTER_TO_UINT (user_data))
         g_print ("[%s] PIN operation successful\n\n",
                  mbim_device_get_path_display (device));
-
-#undef VALIDATE_UNKNOWN
-#define VALIDATE_UNKNOWN(str) (str ? str : "unknown")
 
     pin_state_str = mbim_pin_state_get_string (pin_state);
 
@@ -639,10 +643,10 @@ set_pin_input_parse (guint         n_expected,
         return FALSE;
     }
 
-    *pin = split[0];
-    *new_pin = split[1] ? split[1] : NULL;
+    *pin = g_strdup (split[0]);
+    *new_pin = g_strdup (split[1]);
 
-    g_free (split);
+    g_strfreev (split);
     return TRUE;
 }
 
@@ -670,6 +674,8 @@ connect_ready (MbimDevice   *device,
     if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -701,9 +707,6 @@ connect_ready (MbimDevice   *device,
     default:
         break;
     }
-
-#undef VALIDATE_UNKNOWN
-#define VALIDATE_UNKNOWN(str) (str ? str : "unknown")
 
     g_print ("[%s] Connection status:\n"
              "\t      Session ID: '%u'\n"
@@ -756,7 +759,7 @@ set_connect_activate_parse (const gchar       *str,
     }
 
     /* APN */
-    *apn = split[0];
+    *apn = g_strdup (split[0]);
 
     /* Some defaults */
     *auth_protocol = MBIM_AUTH_PROTOCOL_NONE;
@@ -776,15 +779,14 @@ set_connect_activate_parse (const gchar       *str,
 
         /* Username */
         if (split[2]) {
-            *username = split[2];
+            *username = g_strdup (split[2]);
 
             /* Password */
-            if (split[3])
-                *password = split[3];
+            *password = g_strdup (split[3]);
         }
     }
 
-    g_free (split);
+    g_strfreev (split);
     return TRUE;
 }
 
@@ -803,6 +805,8 @@ home_provider_ready (MbimDevice   *device,
     if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -818,9 +822,6 @@ home_provider_ready (MbimDevice   *device,
 
     provider_state_str = mbim_provider_state_build_string_from_mask (provider->provider_state);
     cellular_class_str = mbim_cellular_class_build_string_from_mask (provider->cellular_class);
-
-#undef VALIDATE_UNKNOWN
-#define VALIDATE_UNKNOWN(str) (str ? str : "unknown")
 
     g_print ("[%s] Home provider:\n"
              "\t   Provider ID: '%s'\n"
@@ -860,6 +861,8 @@ preferred_providers_ready (MbimDevice   *device,
     if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -888,9 +891,6 @@ preferred_providers_ready (MbimDevice   *device,
 
         provider_state_str = mbim_provider_state_build_string_from_mask (providers[i]->provider_state);
         cellular_class_str = mbim_cellular_class_build_string_from_mask (providers[i]->cellular_class);
-
-#undef VALIDATE_UNKNOWN
-#define VALIDATE_UNKNOWN(str) (str ? str : "unknown")
 
         g_print ("\tProvider [%u]:\n"
                  "\t\t    Provider ID: '%s'\n"
@@ -931,6 +931,8 @@ visible_providers_ready (MbimDevice   *device,
     if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -959,9 +961,6 @@ visible_providers_ready (MbimDevice   *device,
 
         provider_state_str = mbim_provider_state_build_string_from_mask (providers[i]->provider_state);
         cellular_class_str = mbim_cellular_class_build_string_from_mask (providers[i]->cellular_class);
-
-#undef VALIDATE_UNKNOWN
-#define VALIDATE_UNKNOWN(str) (str ? str : "unknown")
 
         g_print ("\tProvider [%u]:\n"
                  "\t\t    Provider ID: '%s'\n"
@@ -1011,6 +1010,8 @@ register_state_ready (MbimDevice   *device,
     if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -1039,9 +1040,6 @@ register_state_ready (MbimDevice   *device,
     available_data_classes_str = mbim_data_class_build_string_from_mask (available_data_classes);
     cellular_class_str = mbim_cellular_class_build_string_from_mask (cellular_class);
     registration_flag_str = mbim_registration_flag_build_string_from_mask (registration_flag);
-
-#undef VALIDATE_UNKNOWN
-#define VALIDATE_UNKNOWN(str) (str ? str : "unknown")
 
     g_print ("[%s] Registration status:\n"
              "\t         Network error: '%s'\n"
@@ -1092,6 +1090,8 @@ signal_state_ready (MbimDevice   *device,
     if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -1153,6 +1153,8 @@ packet_service_ready (MbimDevice   *device,
     if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -1182,9 +1184,6 @@ packet_service_ready (MbimDevice   *device,
     default:
         break;
     }
-
-#undef VALIDATE_UNKNOWN
-#define VALIDATE_UNKNOWN(str) (str ? str : "unknown")
 
     highest_available_data_class_str = mbim_data_class_build_string_from_mask (highest_available_data_class);
 
@@ -1226,6 +1225,8 @@ packet_statistics_ready (MbimDevice   *device,
     if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -1317,6 +1318,34 @@ mbimcli_basic_connect_run (MbimDevice   *device,
 
         g_debug ("Asynchronously querying radio state...");
         request = (mbim_message_radio_state_query_new (NULL));
+        mbim_device_command (ctx->device,
+                             request,
+                             10,
+                             ctx->cancellable,
+                             (GAsyncReadyCallback)query_radio_state_ready,
+                             NULL);
+        mbim_message_unref (request);
+        return;
+    }
+
+    /* Request to set radio state? */
+    if (set_radio_state_str) {
+        MbimMessage *request;
+        MbimRadioSwitchState radio_state;
+
+        if (g_ascii_strcasecmp (set_radio_state_str, "on") == 0) {
+            radio_state = MBIM_RADIO_SWITCH_STATE_ON;
+        } else if (g_ascii_strcasecmp (set_radio_state_str, "off") == 0) {
+            radio_state = MBIM_RADIO_SWITCH_STATE_OFF;
+        } else {
+            g_printerr ("error: invalid radio state: '%s'\n", set_radio_state_str);
+            shutdown (FALSE);
+            return;
+        }
+
+        g_debug ("Asynchronously setting radio state to %s...",
+                 radio_state == MBIM_RADIO_SWITCH_STATE_ON ? "on" : "off");
+        request = mbim_message_radio_state_set_new (radio_state, NULL);
         mbim_device_command (ctx->device,
                              request,
                              10,
@@ -1592,7 +1621,7 @@ mbimcli_basic_connect_run (MbimDevice   *device,
         GError *error = NULL;
 
         request = mbim_message_connect_query_new (0,
-                                                  MBIM_ACTIVATION_COMMAND_ACTIVATE,
+                                                  MBIM_ACTIVATION_STATE_UNKNOWN,
                                                   MBIM_VOICE_CALL_STATE_NONE,
                                                   MBIM_CONTEXT_IP_TYPE_DEFAULT,
                                                   mbim_uuid_from_context_type (MBIM_CONTEXT_TYPE_INTERNET),

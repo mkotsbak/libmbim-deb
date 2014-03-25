@@ -35,6 +35,8 @@ mbim-uuid
 @MBIM_SERVICE_STK: 
 @MBIM_SERVICE_AUTH: 
 @MBIM_SERVICE_DSS: 
+@MBIM_SERVICE_MS_FIRMWARE_ID: 
+@MBIM_SERVICE_MS_HOST_SHUTDOWN: 
 
 <!-- ##### ENUM MbimContextType ##### -->
 <para>
@@ -114,6 +116,20 @@ mbim-uuid
 
 
 
+<!-- ##### MACRO MBIM_UUID_MS_FIRMWARE_ID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO MBIM_UUID_MS_HOST_SHUTDOWN ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### FUNCTION mbim_service_get_string ##### -->
 <para>
 
@@ -139,6 +155,16 @@ mbim-uuid
 
 @a: 
 @b: 
+@Returns: 
+
+
+<!-- ##### FUNCTION mbim_uuid_from_printable ##### -->
+<para>
+
+</para>
+
+@str: 
+@uuid: 
 @Returns: 
 
 

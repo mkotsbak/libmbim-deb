@@ -32,6 +32,7 @@
 #include <libmbim-glib.h>
 
 #include "mbimcli.h"
+#include "mbimcli-helpers.h"
 
 /* Context */
 typedef struct {
@@ -79,16 +80,16 @@ static GOptionEntry entries[] = {
 GOptionGroup *
 mbimcli_phonebook_get_option_group (void)
 {
-	GOptionGroup *group;
+    GOptionGroup *group;
 
-	group = g_option_group_new ("phonebook",
-	                            "Phonebook options",
-	                            "Show Phonebook Service options",
-	                            NULL,
-	                            NULL);
-	g_option_group_add_entries (group, entries);
+    group = g_option_group_new ("phonebook",
+                                "Phonebook options",
+                                "Show Phonebook Service options",
+                                NULL,
+                                NULL);
+    g_option_group_add_entries (group, entries);
 
-	return group;
+    return group;
 }
 
 gboolean
@@ -169,17 +170,11 @@ phonebook_write_input_parse (const gchar  *str,
 
     /* Check whether we have the optional Index item */
     if (split[2]) {
-        gulong num;
-
-        errno = 0;
-        num = strtoul (split[2], NULL, 10);
-        if (errno || num > G_MAXUINT) {
+        if (!mbimcli_read_uint_from_string (split[2], idx)) {
             g_printerr ("error: couldn't parse input string, invalid index '%s'\n", split[2]);
             g_strfreev (split);
             return FALSE;
         }
-
-        *idx = (guint)num;
     } else {
         /* Default to index 0, which is an invalid one */
         *idx = 0;
@@ -201,9 +196,11 @@ set_phonebook_write_ready (MbimDevice   *device,
     GError *error = NULL;
 
     response = mbim_device_command_finish (device, res, &error);
-    if (!response) {
+    if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -229,9 +226,11 @@ set_phonebook_delete_ready (MbimDevice   *device,
     GError *error = NULL;
 
     response = mbim_device_command_finish (device, res, &error);
-    if (!response) {
+    if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -259,9 +258,11 @@ query_phonebook_read_ready (MbimDevice   *device,
     gint i = 0;
 
     response = mbim_device_command_finish (device, res, &error);
-    if (!response) {
+    if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -275,9 +276,6 @@ query_phonebook_read_ready (MbimDevice   *device,
         shutdown (FALSE);
         return;
     }
-
-#undef VALIDATE_UNKNOWN
-#define VALIDATE_UNKNOWN(str) (str ? str : "unknown")
 
     g_print ("Successfully read phonebook entries (%d)\n", entry_count);
     for (i = 0; i < entry_count; i++) {
@@ -308,9 +306,11 @@ query_phonebook_configuration_ready (MbimDevice   *device,
     guint32 max_name;
 
     response = mbim_device_command_finish (device, res, &error);
-    if (!response) {
+    if (!response || !mbim_message_command_done_get_result (response, &error)) {
         g_printerr ("error: operation failed: %s\n", error->message);
         g_error_free (error);
+        if (response)
+            mbim_message_unref (response);
         shutdown (FALSE);
         return;
     }
@@ -330,16 +330,13 @@ query_phonebook_configuration_ready (MbimDevice   *device,
 
     state_str = mbim_phonebook_state_get_string (state);
 
-#undef VALIDATE_UNKNOWN
-#define VALIDATE_UNKNOWN(str) (str ? str : "unknown")
-
-    g_print ("\n Phonebook configuration retrived... \n"
+    g_print ("\n Phonebook configuration retrieved... \n"
              "\t   Phonebook state: %s \n"
              "\t Number of entries: %d \n"
              "\t      used entries: %d \n"
              "\t max number length: %d \n"
              "\t         max name : %d \n",
-             VALIDATE_UNKNOWN(state_str),
+             VALIDATE_UNKNOWN (state_str),
              number_of_entries,
              used_entries,
              max_number_length,

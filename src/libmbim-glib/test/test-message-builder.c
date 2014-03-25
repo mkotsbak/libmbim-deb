@@ -26,6 +26,7 @@
 #include "mbim-auth.h"
 #include "mbim-stk.h"
 #include "mbim-dss.h"
+#include "mbim-ms-host-shutdown.h"
 
 #if defined ENABLE_TEST_MESSAGE_TRACES
 static void
@@ -410,7 +411,7 @@ test_message_builder_basic_connect_service_activation_set (void)
 }
 
 static void
-test_message_builder_basic_connect_device_service_subscriber_list_set (void)
+test_message_builder_basic_connect_device_service_subscribe_list_set (void)
 {
     GError *error = NULL;
     MbimEventEntry **entries;
@@ -470,7 +471,7 @@ test_message_builder_basic_connect_device_service_subscriber_list_set (void)
     entries[1]->cids = g_new0 (guint32, 1);
     entries[1]->cids[0] = MBIM_CID_SMS_READ;
 
-    message = (mbim_message_device_service_subscriber_list_set_new (
+    message = (mbim_message_device_service_subscribe_list_set_new (
                    2,
                    (const MbimEventEntry *const *)entries,
                    &error));
@@ -490,7 +491,7 @@ test_message_builder_basic_connect_device_service_subscriber_list_set (void)
     g_assert_cmpuint (mbim_message_get_message_length (message), ==, sizeof (expected_message));
 
     g_assert_cmpuint (mbim_message_command_get_service      (message), ==, MBIM_SERVICE_BASIC_CONNECT);
-    g_assert_cmpuint (mbim_message_command_get_cid          (message), ==, MBIM_CID_BASIC_CONNECT_DEVICE_SERVICE_SUBSCRIBER_LIST);
+    g_assert_cmpuint (mbim_message_command_get_cid          (message), ==, MBIM_CID_BASIC_CONNECT_DEVICE_SERVICE_SUBSCRIBE_LIST);
     g_assert_cmpuint (mbim_message_command_get_command_type (message), ==, MBIM_MESSAGE_COMMAND_TYPE_SET);
 
     g_assert_cmpuint (((GByteArray *)message)->len, ==, sizeof (expected_message));
@@ -1296,6 +1297,55 @@ test_message_builder_basic_connect_multicarrier_providers_set (void)
     mbim_provider_array_free (providers);
 }
 
+static void
+test_message_builder_ms_host_shutdown_notify_set (void)
+{
+    GError *error = NULL;
+    MbimMessage *message;
+    const guint8 expected_message [] = {
+        /* header */
+        0x03, 0x00, 0x00, 0x00, /* type */
+        0x30, 0x00, 0x00, 0x00, /* length */
+        0x01, 0x00, 0x00, 0x00, /* transaction id */
+        /* fragment header */
+        0x01, 0x00, 0x00, 0x00, /* total */
+        0x00, 0x00, 0x00, 0x00, /* current */
+        /* command_message */
+        0x88, 0x3B, 0x7C, 0x26, /* service id */
+        0x98, 0x5F, 0x43, 0xFA,
+        0x98, 0x04, 0x27, 0xD7,
+        0xFB, 0x80, 0x95, 0x9C,
+        0x01, 0x00, 0x00, 0x00, /* command id */
+        0x01, 0x00, 0x00, 0x00, /* command_type */
+        0x00, 0x00, 0x00, 0x00, /* buffer_length */
+        /* information buffer */
+    };
+
+    /* MS Host Shutdown set message */
+    message = mbim_message_ms_host_shutdown_notify_set_new (&error);
+    g_assert_no_error (error);
+    g_assert (message != NULL);
+    mbim_message_set_transaction_id (message, 1);
+
+    test_message_trace ((const guint8 *)((GByteArray *)message)->data,
+                        ((GByteArray *)message)->len,
+                        expected_message,
+                        sizeof (expected_message));
+
+    g_assert_cmpuint (mbim_message_get_transaction_id (message), ==, 1);
+    g_assert_cmpuint (mbim_message_get_message_type   (message), ==, MBIM_MESSAGE_TYPE_COMMAND);
+    g_assert_cmpuint (mbim_message_get_message_length (message), ==, sizeof (expected_message));
+
+    g_assert_cmpuint (mbim_message_command_get_service      (message), ==, MBIM_SERVICE_MS_HOST_SHUTDOWN);
+    g_assert_cmpuint (mbim_message_command_get_cid          (message), ==, MBIM_CID_MS_HOST_SHUTDOWN_NOTIFY);
+    g_assert_cmpuint (mbim_message_command_get_command_type (message), ==, MBIM_MESSAGE_COMMAND_TYPE_SET);
+
+    g_assert_cmpuint (((GByteArray *)message)->len, ==, sizeof (expected_message));
+    g_assert (memcmp (((GByteArray *)message)->data, expected_message, sizeof (expected_message)) == 0);
+
+    mbim_message_unref (message);
+}
+
 int main (int argc, char **argv)
 {
     g_test_init (&argc, &argv, NULL);
@@ -1305,7 +1355,7 @@ int main (int argc, char **argv)
     g_test_add_func ("/libmbim-glib/message/builder/basic-connect/connect/set/raw", test_message_builder_basic_connect_connect_set_raw);
     g_test_add_func ("/libmbim-glib/message/builder/basic-connect/connect/set", test_message_builder_basic_connect_connect_set);
     g_test_add_func ("/libmbim-glib/message/builder/basic-connect/service-activation/set", test_message_builder_basic_connect_service_activation_set);
-    g_test_add_func ("/libmbim-glib/message/builder/basic-connect/device-service-subscriber-list/set", test_message_builder_basic_connect_device_service_subscriber_list_set);
+    g_test_add_func ("/libmbim-glib/message/builder/basic-connect/device-service-subscribe-list/set", test_message_builder_basic_connect_device_service_subscribe_list_set);
     g_test_add_func ("/libmbim-glib/message/builder/ussd/set", test_message_builder_ussd_set);
     g_test_add_func ("/libmbim-glib/message/builder/auth/akap/query", test_message_builder_auth_akap_query);
     g_test_add_func ("/libmbim-glib/message/builder/stk/pac/set", test_message_builder_stk_pac_set);
@@ -1316,6 +1366,7 @@ int main (int argc, char **argv)
     g_test_add_func ("/libmbim-glib/message/builder/basic-connect/ip-packet-filters/set/two", test_message_builder_basic_connect_ip_packet_filters_set_two);
     g_test_add_func ("/libmbim-glib/message/builder/dss/connect/set", test_message_builder_dss_connect_set);
     g_test_add_func ("/libmbim-glib/message/builder/basic-connect/multicarrier-providers/set", test_message_builder_basic_connect_multicarrier_providers_set);
+    g_test_add_func ("/libmbim-glib/message/builder/ms-host-shutdown/notify/set", test_message_builder_ms_host_shutdown_notify_set);
 
     return g_test_run ();
 }
