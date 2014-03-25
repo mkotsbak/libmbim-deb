@@ -1,3 +1,10 @@
+libmbim (1.8.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Update debian/libmbim-glib0.symbols.
+
+ -- Thomas Bechtold <toabctl@debian.org>  Tue, 25 Mar 2014 07:51:28 +0100
+
 libmbim (1.6.0-2) unstable; urgency=medium
 
   * debian/copyright: Mention GFDL-1.3+ license which is used for
