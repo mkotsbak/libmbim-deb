@@ -33,6 +33,7 @@
 #include <libmbim-glib.h>
 
 #include "mbimcli.h"
+#include "mbimcli-helpers.h"
 
 #define PROGRAM_NAME    "mbimcli"
 #define PROGRAM_VERSION PACKAGE_VERSION
@@ -257,30 +258,18 @@ device_open_ready (MbimDevice   *dev,
     case MBIM_SERVICE_PHONEBOOK:
         mbimcli_phonebook_run (dev, cancellable);
         return;
+    case MBIM_SERVICE_DSS:
+        mbimcli_dss_run (dev, cancellable);
+        return;
+    case MBIM_SERVICE_MS_FIRMWARE_ID:
+        mbimcli_ms_firmware_id_run (dev, cancellable);
+        return;
+    case MBIM_SERVICE_MS_HOST_SHUTDOWN:
+        mbimcli_ms_host_shutdown_run (dev, cancellable);
+        return;
     default:
         g_assert_not_reached ();
     }
-}
-
-static guint
-read_transaction_id (const gchar *str)
-{
-    gulong num;
-
-    if (!str || !str[0])
-        return 0;
-
-    for (num = 0; str[num]; num++) {
-        if (!g_ascii_isdigit (str[num]))
-            return 0;
-    }
-
-    errno = 0;
-    num = strtoul (str, NULL, 10);
-    if (!errno && num <= G_MAXUINT) {
-        return (guint)num;
-    }
-    return 0;
 }
 
 static void
@@ -300,8 +289,7 @@ device_new_ready (GObject      *unused,
     if (no_open_str) {
         guint transaction_id;
 
-        transaction_id = read_transaction_id (no_open_str);
-        if (!transaction_id) {
+        if (!mbimcli_read_uint_from_string (no_open_str, &transaction_id)) {
             g_printerr ("error: invalid transaction ID specified: %s\n",
                         no_open_str);
             exit (EXIT_FAILURE);
@@ -315,7 +303,7 @@ device_new_ready (GObject      *unused,
 
     /* Open the device */
     mbim_device_open (device,
-                      15,
+                      30,
                       cancellable,
                       (GAsyncReadyCallback) device_open_ready,
                       NULL);
@@ -334,6 +322,15 @@ parse_actions (void)
         actions_enabled++;
     } else if (mbimcli_phonebook_options_enabled ()) {
         service = MBIM_SERVICE_PHONEBOOK;
+        actions_enabled++;
+    } else if (mbimcli_dss_options_enabled ()) {
+        service = MBIM_SERVICE_DSS;
+        actions_enabled++;
+    } else if (mbimcli_ms_firmware_id_options_enabled ()) {
+        service = MBIM_SERVICE_MS_FIRMWARE_ID;
+        actions_enabled++;
+    } else if (mbimcli_ms_host_shutdown_options_enabled ()) {
+        service = MBIM_SERVICE_MS_HOST_SHUTDOWN;
         actions_enabled++;
     }
 
@@ -369,16 +366,22 @@ int main (int argc, char **argv)
     /* Setup option context, process it and destroy it */
     context = g_option_context_new ("- Control MBIM devices");
     g_option_context_add_group (context,
-	                            mbimcli_basic_connect_get_option_group ());
+                                mbimcli_basic_connect_get_option_group ());
     g_option_context_add_group (context,
-	                            mbimcli_phonebook_get_option_group ());
+                                mbimcli_phonebook_get_option_group ());
+    g_option_context_add_group (context,
+                                mbimcli_dss_get_option_group ());
+    g_option_context_add_group (context,
+                                mbimcli_ms_firmware_id_get_option_group ());
+    g_option_context_add_group (context,
+                                mbimcli_ms_host_shutdown_get_option_group ());
     g_option_context_add_main_entries (context, main_entries, NULL);
     if (!g_option_context_parse (context, &argc, &argv, &error)) {
         g_printerr ("error: %s\n",
                     error->message);
         exit (EXIT_FAILURE);
     }
-	g_option_context_free (context);
+    g_option_context_free (context);
 
     if (version_flag)
         print_version_and_exit ();

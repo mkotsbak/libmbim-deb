@@ -18,7 +18,8 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2013 Aleksander Morgado <aleksander@gnu.org>
+ * Copyright (C) 2013 - 2014 Aleksander Morgado <aleksander@gnu.org>
+ * Copyright (C) 2014 NVDIA Corporation
  */
 
 #include <config.h>
@@ -30,6 +31,7 @@
 /**
  * SECTION: mbim-uuid
  * @title: UUIDs
+ * @short_description: Generic UUID handling routines.
  *
  * This section defines the data type for unique identifiers.
  */
@@ -75,6 +77,62 @@ mbim_uuid_get_printable (const MbimUuid *uuid)
                 uuid->c[0], uuid->c[1],
                 uuid->d[0], uuid->d[1],
                 uuid->e[0], uuid->e[1], uuid->e[2], uuid->e[3], uuid->e[4], uuid->e[5]));
+}
+
+/**
+ * mbim_uuid_from_printable:
+ * @str: a MBIM UUID.
+ * @uuid: pointer to the target #MbimUuid.
+ *
+ * Fills in @uuid from the printable representation give in @str.
+ *
+ * Only ccepts @str written with dashes separating items, e.g.:
+ *  a289cc33-bcbb-8b4f-b6b0-133ec2aae6df
+ *
+ * Returns: %TRUE if @uuid was correctly set, %FALSE otherwise.
+ */
+gboolean
+mbim_uuid_from_printable (const gchar *str,
+                          MbimUuid    *uuid)
+{
+    guint8 tmp[16];
+    guint i;
+    guint k;
+    gint d0;
+    gint d1;
+
+    g_return_val_if_fail (str != NULL, FALSE);
+    g_return_val_if_fail (uuid != NULL, FALSE);
+
+    if (strlen (str) != 36)
+        return FALSE;
+
+    for (i = 0, k = 0, d0 = -1, d1 = -1; str[i]; i++) {
+        /* Accept dashes in expected positions */
+        if (str[i] == '-') {
+            if (i == 8 || i == 13 || i == 18 || i == 23)
+                continue;
+            return FALSE;
+        }
+        /* Read first digit in the hex pair */
+        else if (d0 == -1) {
+            d0 = g_ascii_xdigit_value (str[i]);
+            if (d0 == -1)
+                return FALSE;
+        }
+        /* Read second digit in the hex pair */
+        else {
+            d1 = g_ascii_xdigit_value (str[i]);
+            if (d1 == -1)
+                return FALSE;
+            tmp[k++] = (d0 << 4) | d1;
+            d0 = d1 = -1;
+        }
+    }
+
+    memcpy (uuid, tmp, sizeof (tmp));
+
+    return TRUE;
 }
 
 /*****************************************************************************/
@@ -143,6 +201,22 @@ static const MbimUuid uuid_dss = {
     .e = { 0x6e, 0x0d, 0x58, 0x3c, 0x4d, 0x0e }
 };
 
+static const MbimUuid uuid_ms_firmware_id = {
+    .a = { 0xe9, 0xf7, 0xde, 0xa2 },
+    .b = { 0xfe, 0xaf },
+    .c = { 0x40, 0x09 },
+    .d = { 0x93, 0xce },
+    .e = { 0x90, 0xa3, 0x69, 0x41, 0x03, 0xb6 }
+};
+
+static const MbimUuid uuid_ms_host_shutdown = {
+    .a = { 0x88, 0x3b, 0x7c, 0x26 },
+    .b = { 0x98, 0x5f },
+    .c = { 0x43, 0xfa },
+    .d = { 0x98, 0x04 },
+    .e = { 0x27, 0xd7, 0xfb, 0x80, 0x95, 0x9c }
+};
+
 /**
  * mbim_uuid_from_service:
  * @service: a #MbimService.
@@ -154,7 +228,7 @@ static const MbimUuid uuid_dss = {
 const MbimUuid *
 mbim_uuid_from_service (MbimService service)
 {
-    g_return_val_if_fail (service >= MBIM_SERVICE_INVALID && service <= MBIM_SERVICE_DSS,
+    g_return_val_if_fail (service >= MBIM_SERVICE_INVALID && service <= MBIM_SERVICE_MS_HOST_SHUTDOWN,
                           &uuid_invalid);
 
     switch (service) {
@@ -174,6 +248,10 @@ mbim_uuid_from_service (MbimService service)
         return &uuid_auth;
     case MBIM_SERVICE_DSS:
         return &uuid_dss;
+    case MBIM_SERVICE_MS_FIRMWARE_ID:
+        return &uuid_ms_firmware_id;
+    case MBIM_SERVICE_MS_HOST_SHUTDOWN:
+        return &uuid_ms_host_shutdown;
     default:
         g_assert_not_reached ();
     }
@@ -210,6 +288,12 @@ mbim_uuid_to_service (const MbimUuid *uuid)
 
     if (mbim_uuid_cmp (uuid, &uuid_dss))
         return MBIM_SERVICE_DSS;
+
+    if (mbim_uuid_cmp (uuid, &uuid_ms_firmware_id))
+        return MBIM_SERVICE_MS_FIRMWARE_ID;
+
+    if (mbim_uuid_cmp (uuid, &uuid_ms_host_shutdown))
+        return MBIM_SERVICE_MS_HOST_SHUTDOWN;
 
     return MBIM_SERVICE_INVALID;
 }
@@ -339,9 +423,6 @@ mbim_uuid_from_context_type (MbimContextType context_type)
 MbimContextType
 mbim_uuid_to_context_type (const MbimUuid *uuid)
 {
-    if (mbim_uuid_cmp (uuid, &uuid_dss))
-        return MBIM_SERVICE_DSS;
-
     if (mbim_uuid_cmp (uuid, &uuid_context_type_none))
         return MBIM_CONTEXT_TYPE_NONE;
 

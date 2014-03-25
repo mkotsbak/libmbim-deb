@@ -230,6 +230,22 @@ Basic Connect
 @Returns: 
 
 
+<!-- ##### FUNCTION mbim_message_subscriber_ready_status_notification_parse ##### -->
+<para>
+
+</para>
+
+@message: 
+@ready_state: 
+@subscriber_id: 
+@sim_icc_id: 
+@ready_info: 
+@telephone_numbers_count: 
+@telephone_numbers: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION mbim_message_radio_state_query_new ##### -->
 <para>
 
@@ -388,6 +404,18 @@ Basic Connect
 
 
 <!-- ##### FUNCTION mbim_message_preferred_providers_response_parse ##### -->
+<para>
+
+</para>
+
+@message: 
+@providers_count: 
+@providers: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION mbim_message_preferred_providers_notification_parse ##### -->
 <para>
 
 </para>
@@ -815,7 +843,7 @@ Basic Connect
 @Returns: 
 
 
-<!-- ##### FUNCTION mbim_message_device_service_subscriber_list_set_new ##### -->
+<!-- ##### FUNCTION mbim_message_device_service_subscribe_list_set_new ##### -->
 <para>
 
 </para>
@@ -826,7 +854,7 @@ Basic Connect
 @Returns: 
 
 
-<!-- ##### FUNCTION mbim_message_device_service_subscriber_list_response_parse ##### -->
+<!-- ##### FUNCTION mbim_message_device_service_subscribe_list_response_parse ##### -->
 <para>
 
 </para>
@@ -925,6 +953,17 @@ Basic Connect
 @Returns: 
 
 
+<!-- ##### FUNCTION mbim_message_emergency_mode_notification_parse ##### -->
+<para>
+
+</para>
+
+@message: 
+@state: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION mbim_message_ip_packet_filters_query_new ##### -->
 <para>
 
@@ -983,6 +1022,18 @@ Basic Connect
 
 
 <!-- ##### FUNCTION mbim_message_multicarrier_providers_response_parse ##### -->
+<para>
+
+</para>
+
+@message: 
+@providers_count: 
+@providers: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION mbim_message_multicarrier_providers_notification_parse ##### -->
 <para>
 
 </para>

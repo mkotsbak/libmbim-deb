@@ -50,9 +50,11 @@ struct MBIM_PACKED _MbimUuid {
 };
 #undef MBIM_PACKED
 
-gboolean  mbim_uuid_cmp           (const MbimUuid *a,
-                                   const MbimUuid *b);
-gchar    *mbim_uuid_get_printable (const MbimUuid *uuid);
+gboolean  mbim_uuid_cmp            (const MbimUuid *a,
+                                    const MbimUuid *b);
+gchar    *mbim_uuid_get_printable  (const MbimUuid *uuid);
+gboolean  mbim_uuid_from_printable (const gchar *str,
+                                    MbimUuid    *uuid);
 
 /*****************************************************************************/
 
@@ -66,18 +68,22 @@ gchar    *mbim_uuid_get_printable (const MbimUuid *uuid);
  * @MBIM_SERVICE_STK: SIM toolkit service.
  * @MBIM_SERVICE_AUTH: Authentication service.
  * @MBIM_SERVICE_DSS: Device Service Stream service.
+ * @MBIM_SERVICE_MS_FIRMWARE_ID: Microsoft Firmware ID service.
+ * @MBIM_SERVICE_MS_HOST_SHUTDOWN: Microsoft Host Shutdown service.
  *
  * Enumeration of the generic MBIM services.
  */
 typedef enum {
-    MBIM_SERVICE_INVALID       = 0,
-    MBIM_SERVICE_BASIC_CONNECT = 1,
-    MBIM_SERVICE_SMS           = 2,
-    MBIM_SERVICE_USSD          = 3,
-    MBIM_SERVICE_PHONEBOOK     = 4,
-    MBIM_SERVICE_STK           = 5,
-    MBIM_SERVICE_AUTH          = 6,
-    MBIM_SERVICE_DSS           = 7,
+    MBIM_SERVICE_INVALID          = 0,
+    MBIM_SERVICE_BASIC_CONNECT    = 1,
+    MBIM_SERVICE_SMS              = 2,
+    MBIM_SERVICE_USSD             = 3,
+    MBIM_SERVICE_PHONEBOOK        = 4,
+    MBIM_SERVICE_STK              = 5,
+    MBIM_SERVICE_AUTH             = 6,
+    MBIM_SERVICE_DSS              = 7,
+    MBIM_SERVICE_MS_FIRMWARE_ID   = 8,
+    MBIM_SERVICE_MS_HOST_SHUTDOWN = 9,
 } MbimService;
 
 /**
@@ -151,6 +157,24 @@ typedef enum {
  * Returns: (transfer none): a #MbimUuid.
  */
 #define MBIM_UUID_DSS mbim_uuid_from_service (MBIM_SERVICE_DSS)
+
+/**
+ * MBIM_UUID_MS_FIRMWARE_ID:
+ *
+ * Get the UUID of the %MBIM_SERVICE_MS_FIRMWARE_ID service.
+ *
+ * Returns: (transfer none): a #MbimUuid.
+ */
+#define MBIM_UUID_MS_FIRMWARE_ID mbim_uuid_from_service (MBIM_SERVICE_MS_FIRMWARE_ID)
+
+/**
+ * MBIM_UUID_MS_HOST_SHUTDOWN:
+ *
+ * Get the UUID of the %MBIM_SERVICE_MS_HOST_SHUTDOWN service.
+ *
+ * Returns: (transfer none): a #MbimUuid.
+ */
+#define MBIM_UUID_MS_HOST_SHUTDOWN mbim_uuid_from_service (MBIM_SERVICE_MS_HOST_SHUTDOWN)
 
 /* To/From service */
 const MbimUuid *mbim_uuid_from_service  (MbimService     service);

@@ -53,7 +53,7 @@ G_BEGIN_DECLS
  * @MBIM_CID_BASIC_CONNECT_SERVICE_ACTIVATION: Service activation.
  * @MBIM_CID_BASIC_CONNECT_IP_CONFIGURATION: IP configuration.
  * @MBIM_CID_BASIC_CONNECT_DEVICE_SERVICES: Device services.
- * @MBIM_CID_BASIC_CONNECT_DEVICE_SERVICE_SUBSCRIBER_LIST: Device service subscriber list.
+ * @MBIM_CID_BASIC_CONNECT_DEVICE_SERVICE_SUBSCRIBE_LIST: Device service subscribe list.
  * @MBIM_CID_BASIC_CONNECT_PACKET_STATISTICS: Packet statistics.
  * @MBIM_CID_BASIC_CONNECT_NETWORK_IDLE_HINT: Network idle hint.
  * @MBIM_CID_BASIC_CONNECT_EMERGENCY_MODE: Emergency mode.
@@ -81,7 +81,7 @@ typedef enum {
     MBIM_CID_BASIC_CONNECT_IP_CONFIGURATION               = 15,
     MBIM_CID_BASIC_CONNECT_DEVICE_SERVICES                = 16,
     /* 17, 18 reserved */
-    MBIM_CID_BASIC_CONNECT_DEVICE_SERVICE_SUBSCRIBER_LIST = 19,
+    MBIM_CID_BASIC_CONNECT_DEVICE_SERVICE_SUBSCRIBE_LIST  = 19,
     MBIM_CID_BASIC_CONNECT_PACKET_STATISTICS              = 20,
     MBIM_CID_BASIC_CONNECT_NETWORK_IDLE_HINT              = 21,
     MBIM_CID_BASIC_CONNECT_EMERGENCY_MODE                 = 22,
@@ -182,6 +182,30 @@ typedef enum {
     MBIM_CID_DSS_UNKNOWN = 0,
     MBIM_CID_DSS_CONNECT = 1
 } MbimCidDss;
+
+/**
+ * MbimCidMsFirmwareId:
+ * @MBIM_CID_MS_FIRMWARE_ID_UNKNOWN: Unknown command.
+ * @MBIM_CID_MS_FIRMWARE_ID_GET: Get Firmware ID.
+ *
+ * MBIM commands in the %MBIM_SERVICE_MS_FIRMWARE_ID service.
+ */
+typedef enum {
+    MBIM_CID_MS_FIRMWARE_ID_UNKNOWN = 0,
+    MBIM_CID_MS_FIRMWARE_ID_GET     = 1
+} MbimCidMsFirmwareId;
+
+/**
+ * MbimCidMsHostShutdown:
+ * @MBIM_CID_MS_HOST_SHUTDOWN_UNKNOWN: Unknown command.
+ * @MBIM_CID_MS_HOST_SHUTDOWN_NOTIFY: Notify that the host is shutting down.
+ *
+ * MBIM commands in the %MBIM_SERVICE_MS_HOST_SHUTDOWN service.
+ */
+typedef enum {
+    MBIM_CID_MS_HOST_SHUTDOWN_UNKNOWN = 0,
+    MBIM_CID_MS_HOST_SHUTDOWN_NOTIFY  = 1
+} MbimCidMsHostShutdown;
 
 /* Command helpers */
 

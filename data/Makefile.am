@@ -7,4 +7,6 @@ EXTRA_DIST = \
 	mbim-service-auth.json \
 	mbim-service-phonebook.json \
 	mbim-service-stk.json \
-	mbim-service-dss.json
+	mbim-service-dss.json \
+	mbim-service-ms-firmware-id.json \
+	mbim-service-ms-host-shutdown.json

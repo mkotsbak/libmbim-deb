@@ -44,7 +44,7 @@ mbim-cid
 @MBIM_CID_BASIC_CONNECT_SERVICE_ACTIVATION: 
 @MBIM_CID_BASIC_CONNECT_IP_CONFIGURATION: 
 @MBIM_CID_BASIC_CONNECT_DEVICE_SERVICES: 
-@MBIM_CID_BASIC_CONNECT_DEVICE_SERVICE_SUBSCRIBER_LIST: 
+@MBIM_CID_BASIC_CONNECT_DEVICE_SERVICE_SUBSCRIBE_LIST: 
 @MBIM_CID_BASIC_CONNECT_PACKET_STATISTICS: 
 @MBIM_CID_BASIC_CONNECT_NETWORK_IDLE_HINT: 
 @MBIM_CID_BASIC_CONNECT_EMERGENCY_MODE: 
@@ -109,6 +109,22 @@ mbim-cid
 
 @MBIM_CID_DSS_UNKNOWN: 
 @MBIM_CID_DSS_CONNECT: 
+
+<!-- ##### ENUM MbimCidMsFirmwareId ##### -->
+<para>
+
+</para>
+
+@MBIM_CID_MS_FIRMWARE_ID_UNKNOWN: 
+@MBIM_CID_MS_FIRMWARE_ID_GET: 
+
+<!-- ##### ENUM MbimCidMsHostShutdown ##### -->
+<para>
+
+</para>
+
+@MBIM_CID_MS_HOST_SHUTDOWN_UNKNOWN: 
+@MBIM_CID_MS_HOST_SHUTDOWN_NOTIFY: 
 
 <!-- ##### FUNCTION mbim_cid_can_set ##### -->
 <para>
@@ -205,6 +221,24 @@ mbim-cid
 
 
 <!-- ##### FUNCTION mbim_cid_dss_get_string ##### -->
+<para>
+
+</para>
+
+@val: 
+@Returns: 
+
+
+<!-- ##### FUNCTION mbim_cid_ms_firmware_id_get_string ##### -->
+<para>
+
+</para>
+
+@val: 
+@Returns: 
+
+
+<!-- ##### FUNCTION mbim_cid_ms_host_shutdown_get_string ##### -->
 <para>
 
 </para>

@@ -45,5 +45,10 @@
 #include "mbim-phonebook.h"
 #include "mbim-stk.h"
 #include "mbim-dss.h"
+#include "mbim-ms-firmware-id.h"
+#include "mbim-ms-host-shutdown.h"
+
+/* backwards compatibility */
+#include "mbim-compat.h"
 
 #endif /* _LIBMBIM_GLIB_H_ */
