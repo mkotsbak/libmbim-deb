@@ -130,7 +130,9 @@ am_libmbim_glib_core_la_OBJECTS = libmbim_glib_core_la-mbim-utils.lo \
 	libmbim_glib_core_la-mbim-cid.lo \
 	libmbim_glib_core_la-mbim-message.lo \
 	libmbim_glib_core_la-mbim-device.lo \
-	libmbim_glib_core_la-mbim-compat.lo
+	libmbim_glib_core_la-mbim-compat.lo \
+	libmbim_glib_core_la-mbim-proxy.lo \
+	libmbim_glib_core_la-mbim-proxy-helpers.lo
 libmbim_glib_core_la_OBJECTS = $(am_libmbim_glib_core_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -306,6 +308,8 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MBIMCLI_CFLAGS = @MBIMCLI_CFLAGS@
 MBIMCLI_LIBS = @MBIMCLI_LIBS@
+MBIMPROXY_CFLAGS = @MBIMPROXY_CFLAGS@
+MBIMPROXY_LIBS = @MBIMPROXY_LIBS@
 MBIM_GLIB_LT_AGE = @MBIM_GLIB_LT_AGE@
 MBIM_GLIB_LT_CURRENT = @MBIM_GLIB_LT_CURRENT@
 MBIM_GLIB_LT_REVISION = @MBIM_GLIB_LT_REVISION@
@@ -402,6 +406,7 @@ libmbim_glib_core_la_CPPFLAGS = \
 	-I$(top_builddir)/src/libmbim-glib \
 	-I$(top_builddir)/src/libmbim-glib/generated \
 	-DLIBMBIM_GLIB_COMPILATION \
+	-DLIBEXEC_PATH=\""$(libexecdir)"\" \
 	-DG_LOG_DOMAIN=\"Mbim\"
 
 libmbim_glib_core_la_SOURCES = \
@@ -413,7 +418,9 @@ libmbim_glib_core_la_SOURCES = \
 	mbim-cid.h mbim-cid.c \
 	mbim-message-private.h mbim-message.h mbim-message.c \
 	mbim-device.h mbim-device.c \
-	mbim-compat.h mbim-compat.c
+	mbim-compat.h mbim-compat.c \
+	mbim-proxy.h mbim-proxy.c \
+	mbim-proxy-helpers.h mbim-proxy-helpers.c
 
 
 # Final installable library
@@ -440,7 +447,8 @@ include_HEADERS = \
 	mbim-cid.h \
 	mbim-message.h \
 	mbim-device.h \
-	mbim-compat.h
+	mbim-compat.h \
+	mbim-proxy.h
 
 EXTRA_DIST = \
 	mbim-version.h.in
@@ -544,6 +552,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_core_la-mbim-compat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_core_la-mbim-device.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_core_la-mbim-message.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_core_la-mbim-proxy-helpers.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_core_la-mbim-proxy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_core_la-mbim-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_core_la-mbim-uuid.Plo@am__quote@
 
@@ -609,6 +619,20 @@ libmbim_glib_core_la-mbim-compat.lo: mbim-compat.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mbim-compat.c' object='libmbim_glib_core_la-mbim-compat.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmbim_glib_core_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libmbim_glib_core_la-mbim-compat.lo `test -f 'mbim-compat.c' || echo '$(srcdir)/'`mbim-compat.c
+
+libmbim_glib_core_la-mbim-proxy.lo: mbim-proxy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmbim_glib_core_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libmbim_glib_core_la-mbim-proxy.lo -MD -MP -MF $(DEPDIR)/libmbim_glib_core_la-mbim-proxy.Tpo -c -o libmbim_glib_core_la-mbim-proxy.lo `test -f 'mbim-proxy.c' || echo '$(srcdir)/'`mbim-proxy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmbim_glib_core_la-mbim-proxy.Tpo $(DEPDIR)/libmbim_glib_core_la-mbim-proxy.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mbim-proxy.c' object='libmbim_glib_core_la-mbim-proxy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmbim_glib_core_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libmbim_glib_core_la-mbim-proxy.lo `test -f 'mbim-proxy.c' || echo '$(srcdir)/'`mbim-proxy.c
+
+libmbim_glib_core_la-mbim-proxy-helpers.lo: mbim-proxy-helpers.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmbim_glib_core_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libmbim_glib_core_la-mbim-proxy-helpers.lo -MD -MP -MF $(DEPDIR)/libmbim_glib_core_la-mbim-proxy-helpers.Tpo -c -o libmbim_glib_core_la-mbim-proxy-helpers.lo `test -f 'mbim-proxy-helpers.c' || echo '$(srcdir)/'`mbim-proxy-helpers.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmbim_glib_core_la-mbim-proxy-helpers.Tpo $(DEPDIR)/libmbim_glib_core_la-mbim-proxy-helpers.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mbim-proxy-helpers.c' object='libmbim_glib_core_la-mbim-proxy-helpers.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmbim_glib_core_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libmbim_glib_core_la-mbim-proxy-helpers.lo `test -f 'mbim-proxy-helpers.c' || echo '$(srcdir)/'`mbim-proxy-helpers.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

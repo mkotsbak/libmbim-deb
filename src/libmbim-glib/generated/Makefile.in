@@ -109,7 +109,8 @@ am__objects_2 = libmbim_glib_generated_la-mbim-error-types.lo \
 	libmbim_glib_generated_la-mbim-stk.lo \
 	libmbim_glib_generated_la-mbim-dss.lo \
 	libmbim_glib_generated_la-mbim-ms-firmware-id.lo \
-	libmbim_glib_generated_la-mbim-ms-host-shutdown.lo
+	libmbim_glib_generated_la-mbim-ms-host-shutdown.lo \
+	libmbim_glib_generated_la-mbim-proxy-control.lo
 nodist_libmbim_glib_generated_la_OBJECTS = $(am__objects_1) \
 	$(am__objects_2)
 libmbim_glib_generated_la_OBJECTS =  \
@@ -263,6 +264,8 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MBIMCLI_CFLAGS = @MBIMCLI_CFLAGS@
 MBIMCLI_LIBS = @MBIMCLI_LIBS@
+MBIMPROXY_CFLAGS = @MBIMPROXY_CFLAGS@
+MBIMPROXY_LIBS = @MBIMPROXY_LIBS@
 MBIM_GLIB_LT_AGE = @MBIM_GLIB_LT_AGE@
 MBIM_GLIB_LT_CURRENT = @MBIM_GLIB_LT_CURRENT@
 MBIM_GLIB_LT_REVISION = @MBIM_GLIB_LT_REVISION@
@@ -358,7 +361,8 @@ GENERATED_H = \
 	mbim-stk.h \
 	mbim-dss.h \
 	mbim-ms-firmware-id.h \
-	mbim-ms-host-shutdown.h
+	mbim-ms-host-shutdown.h \
+	mbim-proxy-control.h
 
 GENERATED_C = \
 	mbim-error-types.c \
@@ -372,7 +376,8 @@ GENERATED_C = \
 	mbim-stk.c \
 	mbim-dss.c \
 	mbim-ms-firmware-id.c \
-	mbim-ms-host-shutdown.c
+	mbim-ms-host-shutdown.c \
+	mbim-proxy-control.c
 
 GENERATED_SECTIONS = \
 	mbim-basic-connect.sections \
@@ -383,7 +388,8 @@ GENERATED_SECTIONS = \
 	mbim-stk.sections \
 	mbim-dss.sections \
 	mbim-ms-firmware-id.sections \
-	mbim-ms-host-shutdown.sections
+	mbim-ms-host-shutdown.sections \
+	mbim-proxy-control.sections
 
 
 # Enum/Flag types
@@ -477,6 +483,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_generated_la-mbim-ms-firmware-id.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_generated_la-mbim-ms-host-shutdown.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_generated_la-mbim-phonebook.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_generated_la-mbim-proxy-control.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_generated_la-mbim-sms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_generated_la-mbim-stk.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmbim_glib_generated_la-mbim-ussd.Plo@am__quote@
@@ -585,6 +592,13 @@ libmbim_glib_generated_la-mbim-ms-host-shutdown.lo: mbim-ms-host-shutdown.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mbim-ms-host-shutdown.c' object='libmbim_glib_generated_la-mbim-ms-host-shutdown.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmbim_glib_generated_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libmbim_glib_generated_la-mbim-ms-host-shutdown.lo `test -f 'mbim-ms-host-shutdown.c' || echo '$(srcdir)/'`mbim-ms-host-shutdown.c
+
+libmbim_glib_generated_la-mbim-proxy-control.lo: mbim-proxy-control.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmbim_glib_generated_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libmbim_glib_generated_la-mbim-proxy-control.lo -MD -MP -MF $(DEPDIR)/libmbim_glib_generated_la-mbim-proxy-control.Tpo -c -o libmbim_glib_generated_la-mbim-proxy-control.lo `test -f 'mbim-proxy-control.c' || echo '$(srcdir)/'`mbim-proxy-control.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmbim_glib_generated_la-mbim-proxy-control.Tpo $(DEPDIR)/libmbim_glib_generated_la-mbim-proxy-control.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mbim-proxy-control.c' object='libmbim_glib_generated_la-mbim-proxy-control.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmbim_glib_generated_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libmbim_glib_generated_la-mbim-proxy-control.lo `test -f 'mbim-proxy-control.c' || echo '$(srcdir)/'`mbim-proxy-control.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -937,6 +951,15 @@ mbim-ms-host-shutdown.h mbim-ms-host-shutdown.c mbim-ms-host-shutdown.sections: 
 		$(top_srcdir)/build-aux/mbim-codegen/mbim-codegen \
 			--input $(top_srcdir)/data/mbim-service-ms-host-shutdown.json \
 			--output mbim-ms-host-shutdown
+
+# Proxy Control service
+mbim-proxy-control.h mbim-proxy-control.c mbim-proxy-control.sections: $(top_srcdir)/data/mbim-service-proxy-control.json $(top_srcdir)/build-aux/mbim-codegen/*.py $(top_srcdir)/build-aux/mbim-codegen/mbim-codegen
+	$(AM_V_GEN)  \
+		rm -f mbim-proxy-control.h && \
+		rm -f mbim-proxy-control.c && \
+		$(top_srcdir)/build-aux/mbim-codegen/mbim-codegen \
+			--input $(top_srcdir)/data/mbim-service-proxy-control.json \
+			--output mbim-proxy-control
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

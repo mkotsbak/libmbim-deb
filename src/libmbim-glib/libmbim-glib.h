@@ -17,7 +17,7 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2013 Aleksander Morgado <aleksander@gnu.org>
+ * Copyright (C) 2013 - 2014 Aleksander Morgado <aleksander@aleksander.es>
  */
 
 #ifndef _LIBMBIM_GLIB_H_
@@ -34,6 +34,7 @@
 #include "mbim-message.h"
 #include "mbim-device.h"
 #include "mbim-enums.h"
+#include "mbim-proxy.h"
 
 /* generated */
 #include "mbim-enum-types.h"

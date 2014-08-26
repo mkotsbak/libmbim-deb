@@ -8,11 +8,12 @@
       <sub name="Command IDs" link="libmbim-glib-Command-IDs.html"/>
       <sub name="MbimMessage" link="MbimMessage.html"/>
       <sub name="MbimDevice" link="MbimDevice.html"/>
+      <sub name="MbimProxy" link="MbimProxy.html"/>
       <sub name="Enumerations and Flags" link="libmbim-glib-Enumerations-and-Flags.html"/>
       <sub name="Errors" link="libmbim-glib-Errors.html"/>
       <sub name="Common utilities" link="libmbim-glib-Common-utilities.html"/>
     </sub>
-    <sub name="Services" link="ch02.html">
+    <sub name="Generic Services" link="ch02.html">
       <sub name="Basic Connect" link="libmbim-glib-Basic-Connect.html"/>
       <sub name="SMS" link="libmbim-glib-SMS.html"/>
       <sub name="USSD" link="libmbim-glib-USSD.html"/>
@@ -20,10 +21,12 @@
       <sub name="Phonebook" link="libmbim-glib-Phonebook.html"/>
       <sub name="STK" link="libmbim-glib-STK.html"/>
       <sub name="DSS" link="libmbim-glib-DSS.html"/>
+    </sub>
+    <sub name="Other Services" link="ch03.html">
       <sub name="MS Firmware ID" link="libmbim-glib-MS-Firmware-ID.html"/>
       <sub name="MS Host Shutdown" link="libmbim-glib-MS-Host-Shutdown.html"/>
     </sub>
-    <sub name="Compatibility" link="ch03.html">
+    <sub name="Compatibility" link="ch04.html">
       <sub name="Deprecated API" link="libmbim-glib-Deprecated-API.html"/>
     </sub>
     <sub name="Object Hierarchy" link="object-tree.html"/>
@@ -36,6 +39,10 @@
     <keyword type="macro" name="MBIM_MICRO_VERSION" link="libmbim-glib-Version-checks.html#MBIM-MICRO-VERSION:CAPS"/>
     <keyword type="macro" name="MBIM_CHECK_VERSION()" link="libmbim-glib-Version-checks.html#MBIM-CHECK-VERSION:CAPS"/>
     <keyword type="function" name="mbim_service_get_string ()" link="libmbim-glib-UUIDs.html#mbim-service-get-string"/>
+    <keyword type="function" name="mbim_service_lookup_name ()" link="libmbim-glib-UUIDs.html#mbim-service-lookup-name"/>
+    <keyword type="function" name="mbim_register_custom_service ()" link="libmbim-glib-UUIDs.html#mbim-register-custom-service"/>
+    <keyword type="function" name="mbim_unregister_custom_service ()" link="libmbim-glib-UUIDs.html#mbim-unregister-custom-service"/>
+    <keyword type="function" name="mbim_service_id_is_custom ()" link="libmbim-glib-UUIDs.html#mbim-service-id-is-custom"/>
     <keyword type="function" name="mbim_context_type_get_string ()" link="libmbim-glib-UUIDs.html#mbim-context-type-get-string"/>
     <keyword type="function" name="mbim_uuid_cmp ()" link="libmbim-glib-UUIDs.html#mbim-uuid-cmp"/>
     <keyword type="function" name="mbim_uuid_from_printable ()" link="libmbim-glib-UUIDs.html#mbim-uuid-from-printable"/>
@@ -57,6 +64,7 @@
     <keyword type="macro" name="MBIM_UUID_DSS" link="libmbim-glib-UUIDs.html#MBIM-UUID-DSS:CAPS"/>
     <keyword type="macro" name="MBIM_UUID_MS_FIRMWARE_ID" link="libmbim-glib-UUIDs.html#MBIM-UUID-MS-FIRMWARE-ID:CAPS"/>
     <keyword type="macro" name="MBIM_UUID_MS_HOST_SHUTDOWN" link="libmbim-glib-UUIDs.html#MBIM-UUID-MS-HOST-SHUTDOWN:CAPS"/>
+    <keyword type="macro" name="MBIM_UUID_PROXY_CONTROL" link="libmbim-glib-UUIDs.html#MBIM-UUID-PROXY-CONTROL:CAPS"/>
     <keyword type="function" name="mbim_cid_can_set ()" link="libmbim-glib-Command-IDs.html#mbim-cid-can-set"/>
     <keyword type="function" name="mbim_cid_can_query ()" link="libmbim-glib-Command-IDs.html#mbim-cid-can-query"/>
     <keyword type="function" name="mbim_cid_can_notify ()" link="libmbim-glib-Command-IDs.html#mbim-cid-can-notify"/>
@@ -70,6 +78,7 @@
     <keyword type="function" name="mbim_cid_dss_get_string ()" link="libmbim-glib-Command-IDs.html#mbim-cid-dss-get-string"/>
     <keyword type="function" name="mbim_cid_ms_firmware_id_get_string ()" link="libmbim-glib-Command-IDs.html#mbim-cid-ms-firmware-id-get-string"/>
     <keyword type="function" name="mbim_cid_ms_host_shutdown_get_string ()" link="libmbim-glib-Command-IDs.html#mbim-cid-ms-host-shutdown-get-string"/>
+    <keyword type="function" name="mbim_cid_proxy_control_get_string ()" link="libmbim-glib-Command-IDs.html#mbim-cid-proxy-control-get-string"/>
     <keyword type="enum" name="enum MbimCidBasicConnect" link="libmbim-glib-Command-IDs.html#MbimCidBasicConnect"/>
     <keyword type="enum" name="enum MbimCidSms" link="libmbim-glib-Command-IDs.html#MbimCidSms"/>
     <keyword type="enum" name="enum MbimCidUssd" link="libmbim-glib-Command-IDs.html#MbimCidUssd"/>
@@ -79,6 +88,7 @@
     <keyword type="enum" name="enum MbimCidDss" link="libmbim-glib-Command-IDs.html#MbimCidDss"/>
     <keyword type="enum" name="enum MbimCidMsFirmwareId" link="libmbim-glib-Command-IDs.html#MbimCidMsFirmwareId"/>
     <keyword type="enum" name="enum MbimCidMsHostShutdown" link="libmbim-glib-Command-IDs.html#MbimCidMsHostShutdown"/>
+    <keyword type="enum" name="enum MbimCidProxyControl" link="libmbim-glib-Command-IDs.html#MbimCidProxyControl"/>
     <keyword type="function" name="mbim_message_new ()" link="MbimMessage.html#mbim-message-new"/>
     <keyword type="function" name="mbim_message_dup ()" link="MbimMessage.html#mbim-message-dup"/>
     <keyword type="function" name="mbim_message_ref ()" link="MbimMessage.html#mbim-message-ref"/>
@@ -132,18 +142,37 @@
     <keyword type="function" name="mbim_device_is_open ()" link="MbimDevice.html#mbim-device-is-open"/>
     <keyword type="function" name="mbim_device_open ()" link="MbimDevice.html#mbim-device-open"/>
     <keyword type="function" name="mbim_device_open_finish ()" link="MbimDevice.html#mbim-device-open-finish"/>
+    <keyword type="function" name="mbim_device_open_full ()" link="MbimDevice.html#mbim-device-open-full"/>
+    <keyword type="function" name="mbim_device_open_full_finish ()" link="MbimDevice.html#mbim-device-open-full-finish"/>
     <keyword type="function" name="mbim_device_close ()" link="MbimDevice.html#mbim-device-close"/>
     <keyword type="function" name="mbim_device_close_finish ()" link="MbimDevice.html#mbim-device-close-finish"/>
     <keyword type="function" name="mbim_device_close_force ()" link="MbimDevice.html#mbim-device-close-force"/>
     <keyword type="function" name="mbim_device_get_next_transaction_id ()" link="MbimDevice.html#mbim-device-get-next-transaction-id"/>
     <keyword type="function" name="mbim_device_command ()" link="MbimDevice.html#mbim-device-command"/>
     <keyword type="function" name="mbim_device_command_finish ()" link="MbimDevice.html#mbim-device-command-finish"/>
+    <keyword type="macro" name="MBIM_DEVICE_FILE" link="MbimDevice.html#MBIM-DEVICE-FILE:CAPS"/>
+    <keyword type="macro" name="MBIM_DEVICE_IN_SESSION" link="MbimDevice.html#MBIM-DEVICE-IN-SESSION:CAPS"/>
+    <keyword type="macro" name="MBIM_DEVICE_TRANSACTION_ID" link="MbimDevice.html#MBIM-DEVICE-TRANSACTION-ID:CAPS"/>
+    <keyword type="macro" name="MBIM_DEVICE_SIGNAL_REMOVED" link="MbimDevice.html#MBIM-DEVICE-SIGNAL-REMOVED:CAPS"/>
+    <keyword type="macro" name="MBIM_DEVICE_SIGNAL_INDICATE_STATUS" link="MbimDevice.html#MBIM-DEVICE-SIGNAL-INDICATE-STATUS:CAPS"/>
+    <keyword type="macro" name="MBIM_DEVICE_SIGNAL_ERROR" link="MbimDevice.html#MBIM-DEVICE-SIGNAL-ERROR:CAPS"/>
     <keyword type="struct" name="struct MbimDevice" link="MbimDevice.html#MbimDevice-struct"/>
+    <keyword type="enum" name="enum MbimDeviceOpenFlags" link="MbimDevice.html#MbimDeviceOpenFlags"/>
     <keyword type="property" name="The “device-file” property" link="MbimDevice.html#MbimDevice--device-file"/>
     <keyword type="property" name="The “device-in-session” property" link="MbimDevice.html#MbimDevice--device-in-session"/>
     <keyword type="property" name="The “device-transaction-id” property" link="MbimDevice.html#MbimDevice--device-transaction-id"/>
     <keyword type="signal" name="The “device-error” signal" link="MbimDevice.html#MbimDevice-device-error"/>
     <keyword type="signal" name="The “device-indicate-status” signal" link="MbimDevice.html#MbimDevice-device-indicate-status"/>
+    <keyword type="signal" name="The “device-removed” signal" link="MbimDevice.html#MbimDevice-device-removed"/>
+    <keyword type="function" name="mbim_proxy_new ()" link="MbimProxy.html#mbim-proxy-new"/>
+    <keyword type="function" name="mbim_proxy_get_n_clients ()" link="MbimProxy.html#mbim-proxy-get-n-clients"/>
+    <keyword type="function" name="mbim_proxy_get_n_devices ()" link="MbimProxy.html#mbim-proxy-get-n-devices"/>
+    <keyword type="macro" name="MBIM_PROXY_SOCKET_PATH" link="MbimProxy.html#MBIM-PROXY-SOCKET-PATH:CAPS"/>
+    <keyword type="macro" name="MBIM_PROXY_N_CLIENTS" link="MbimProxy.html#MBIM-PROXY-N-CLIENTS:CAPS"/>
+    <keyword type="macro" name="MBIM_PROXY_N_DEVICES" link="MbimProxy.html#MBIM-PROXY-N-DEVICES:CAPS"/>
+    <keyword type="struct" name="struct MbimProxy" link="MbimProxy.html#MbimProxy-struct"/>
+    <keyword type="property" name="The “mbim-proxy-n-clients” property" link="MbimProxy.html#MbimProxy--mbim-proxy-n-clients"/>
+    <keyword type="property" name="The “mbim-proxy-n-devices” property" link="MbimProxy.html#MbimProxy--mbim-proxy-n-devices"/>
     <keyword type="function" name="mbim_device_type_get_string ()" link="libmbim-glib-Enumerations-and-Flags.html#mbim-device-type-get-string"/>
     <keyword type="function" name="mbim_cellular_class_build_string_from_mask ()" link="libmbim-glib-Enumerations-and-Flags.html#mbim-cellular-class-build-string-from-mask"/>
     <keyword type="function" name="mbim_voice_class_get_string ()" link="libmbim-glib-Enumerations-and-Flags.html#mbim-voice-class-get-string"/>

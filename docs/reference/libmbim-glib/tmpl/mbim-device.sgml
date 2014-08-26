@@ -22,6 +22,48 @@ MbimDevice
 <!-- ##### SECTION Image ##### -->
 
 
+<!-- ##### MACRO MBIM_DEVICE_FILE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO MBIM_DEVICE_IN_SESSION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO MBIM_DEVICE_TRANSACTION_ID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO MBIM_DEVICE_SIGNAL_REMOVED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO MBIM_DEVICE_SIGNAL_INDICATE_STATUS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO MBIM_DEVICE_SIGNAL_ERROR ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### STRUCT MbimDevice ##### -->
 <para>
 
@@ -43,6 +85,13 @@ MbimDevice
 
 @mbimdevice: the object which received the signal.
 @arg1: 
+
+<!-- ##### SIGNAL MbimDevice::device-removed ##### -->
+<para>
+
+</para>
+
+@mbimdevice: the object which received the signal.
 
 <!-- ##### ARG MbimDevice:device-file ##### -->
 <para>
@@ -138,6 +187,38 @@ MbimDevice
 
 
 <!-- ##### FUNCTION mbim_device_open_finish ##### -->
+<para>
+
+</para>
+
+@self: 
+@res: 
+@error: 
+@Returns: 
+
+
+<!-- ##### ENUM MbimDeviceOpenFlags ##### -->
+<para>
+
+</para>
+
+@MBIM_DEVICE_OPEN_FLAGS_NONE: 
+@MBIM_DEVICE_OPEN_FLAGS_PROXY: 
+
+<!-- ##### FUNCTION mbim_device_open_full ##### -->
+<para>
+
+</para>
+
+@self: 
+@flags: 
+@timeout: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION mbim_device_open_full_finish ##### -->
 <para>
 
 </para>

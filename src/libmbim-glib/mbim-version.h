@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /*
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301 USA.
  *
  * Copyright (C) 2013 Lanedo GmbH
+ * Copyright (C) 2013 - 2014 Aleksander Morgado <aleksander@aleksander.es>
  */
 
 #ifndef _MBIM_VERSION_H_
@@ -42,7 +43,7 @@
  * Evaluates to the minor version number of libmbim-glib which this source
  * is compiled against.
  */
-#define MBIM_MINOR_VERSION (8)
+#define MBIM_MINOR_VERSION (10)
 
 /**
  * MBIM_MICRO_VERSION:

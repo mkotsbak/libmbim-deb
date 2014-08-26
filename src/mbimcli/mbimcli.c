@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright (C) 2013 Aleksander Morgado <aleksander@gnu.org>
+ * Copyright (C) 2013 - 2014 Aleksander Morgado <aleksander@aleksander.es>
  */
 
 #include "config.h"
@@ -47,6 +47,7 @@ static gboolean operation_status;
 
 /* Main options */
 static gchar *device_str;
+static gboolean device_open_proxy_flag;
 static gchar *no_open_str;
 static gboolean no_close_flag;
 static gboolean noop_flag;
@@ -58,6 +59,10 @@ static GOptionEntry main_entries[] = {
     { "device", 'd', 0, G_OPTION_ARG_STRING, &device_str,
       "Specify device path",
       "[PATH]"
+    },
+    { "device-open-proxy", 'p', 0, G_OPTION_ARG_NONE, &device_open_proxy_flag,
+      "Request to use the 'mbim-proxy' proxy",
+      NULL
     },
     { "no-open", 0, 0, G_OPTION_ARG_STRING, &no_open_str,
       "Do not explicitly open the MBIM device before running the command",
@@ -165,7 +170,7 @@ print_version_and_exit (void)
 {
     g_print ("\n"
              PROGRAM_NAME " " PROGRAM_VERSION "\n"
-             "Copyright (2013) Aleksander Morgado\n"
+             "Copyright (2013-2014) Aleksander Morgado\n"
              "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl-2.0.html>\n"
              "This is free software: you are free to change and redistribute it.\n"
              "There is NO WARRANTY, to the extent permitted by law.\n"
@@ -277,6 +282,7 @@ device_new_ready (GObject      *unused,
                   GAsyncResult *res)
 {
     GError *error = NULL;
+    MbimDeviceOpenFlags open_flags = MBIM_DEVICE_OPEN_FLAGS_NONE;
 
     device = mbim_device_new_finish (res, &error);
     if (!device) {
@@ -301,12 +307,17 @@ device_new_ready (GObject      *unused,
                       NULL);
     }
 
+    /* Setup device open flags */
+    if (device_open_proxy_flag)
+        open_flags |= MBIM_DEVICE_OPEN_FLAGS_PROXY;
+
     /* Open the device */
-    mbim_device_open (device,
-                      30,
-                      cancellable,
-                      (GAsyncReadyCallback) device_open_ready,
-                      NULL);
+    mbim_device_open_full (device,
+                           open_flags,
+                           30,
+                           cancellable,
+                           (GAsyncReadyCallback) device_open_ready,
+                           NULL);
 }
 
 /*****************************************************************************/

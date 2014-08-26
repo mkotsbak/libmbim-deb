@@ -82,7 +82,8 @@ DIST_COMMON = $(top_srcdir)/gtester.make $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/depcomp
 noinst_PROGRAMS = test-uuid$(EXEEXT) test-cid$(EXEEXT) \
 	test-message$(EXEEXT) test-fragment$(EXEEXT) \
-	test-message-parser$(EXEEXT) test-message-builder$(EXEEXT)
+	test-message-parser$(EXEEXT) test-message-builder$(EXEEXT) \
+	test-proxy-helpers$(EXEEXT)
 subdir = src/libmbim-glib/test
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/compiler-warnings.m4 \
@@ -134,6 +135,14 @@ test_message_parser_DEPENDENCIES =  \
 	$(top_builddir)/src/libmbim-glib/libmbim-glib-core.la \
 	$(top_builddir)/src/libmbim-glib/generated/libmbim-glib-generated.la \
 	$(am__DEPENDENCIES_1)
+am_test_proxy_helpers_OBJECTS =  \
+	test_proxy_helpers-test-proxy-helpers.$(OBJEXT) \
+	test_proxy_helpers-mbim-proxy-helpers.$(OBJEXT)
+test_proxy_helpers_OBJECTS = $(am_test_proxy_helpers_OBJECTS)
+test_proxy_helpers_DEPENDENCIES =  \
+	$(top_builddir)/src/libmbim-glib/libmbim-glib-core.la \
+	$(top_builddir)/src/libmbim-glib/generated/libmbim-glib-generated.la \
+	$(am__DEPENDENCIES_1)
 am_test_uuid_OBJECTS = test_uuid-test-uuid.$(OBJEXT)
 test_uuid_OBJECTS = $(am_test_uuid_OBJECTS)
 test_uuid_DEPENDENCIES =  \
@@ -176,10 +185,12 @@ am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(test_cid_SOURCES) $(test_fragment_SOURCES) \
 	$(test_message_SOURCES) $(test_message_builder_SOURCES) \
-	$(test_message_parser_SOURCES) $(test_uuid_SOURCES)
+	$(test_message_parser_SOURCES) $(test_proxy_helpers_SOURCES) \
+	$(test_uuid_SOURCES)
 DIST_SOURCES = $(test_cid_SOURCES) $(test_fragment_SOURCES) \
 	$(test_message_SOURCES) $(test_message_builder_SOURCES) \
-	$(test_message_parser_SOURCES) $(test_uuid_SOURCES)
+	$(test_message_parser_SOURCES) $(test_proxy_helpers_SOURCES) \
+	$(test_uuid_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -260,6 +271,8 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MBIMCLI_CFLAGS = @MBIMCLI_CFLAGS@
 MBIMCLI_LIBS = @MBIMCLI_LIBS@
+MBIMPROXY_CFLAGS = @MBIMPROXY_CFLAGS@
+MBIMPROXY_LIBS = @MBIMPROXY_LIBS@
 MBIM_GLIB_LT_AGE = @MBIM_GLIB_LT_AGE@
 MBIM_GLIB_LT_CURRENT = @MBIM_GLIB_LT_CURRENT@
 MBIM_GLIB_LT_REVISION = @MBIM_GLIB_LT_REVISION@
@@ -441,6 +454,24 @@ test_message_builder_LDADD = \
 	$(top_builddir)/src/libmbim-glib/generated/libmbim-glib-generated.la \
 	$(LIBMBIM_GLIB_LIBS)
 
+test_proxy_helpers_SOURCES = \
+	test-proxy-helpers.c \
+	$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.h \
+	$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c
+
+test_proxy_helpers_CPPFLAGS = \
+	$(LIBMBIM_GLIB_CFLAGS) \
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/src/libmbim-glib \
+	-I$(top_builddir)/src/libmbim-glib \
+	-I$(top_builddir)/src/libmbim-glib/generated \
+	-DLIBMBIM_GLIB_COMPILATION
+
+test_proxy_helpers_LDADD = \
+	$(top_builddir)/src/libmbim-glib/libmbim-glib-core.la \
+	$(top_builddir)/src/libmbim-glib/generated/libmbim-glib-generated.la \
+	$(LIBMBIM_GLIB_LIBS)
+
 all: all-am
 
 .SUFFIXES:
@@ -506,6 +537,10 @@ test-message-parser$(EXEEXT): $(test_message_parser_OBJECTS) $(test_message_pars
 	@rm -f test-message-parser$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_message_parser_OBJECTS) $(test_message_parser_LDADD) $(LIBS)
 
+test-proxy-helpers$(EXEEXT): $(test_proxy_helpers_OBJECTS) $(test_proxy_helpers_DEPENDENCIES) $(EXTRA_test_proxy_helpers_DEPENDENCIES) 
+	@rm -f test-proxy-helpers$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_proxy_helpers_OBJECTS) $(test_proxy_helpers_LDADD) $(LIBS)
+
 test-uuid$(EXEEXT): $(test_uuid_OBJECTS) $(test_uuid_DEPENDENCIES) $(EXTRA_test_uuid_DEPENDENCIES) 
 	@rm -f test-uuid$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_uuid_OBJECTS) $(test_uuid_LDADD) $(LIBS)
@@ -521,6 +556,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_message-test-message.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_message_builder-test-message-builder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_message_parser-test-message-parser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_proxy_helpers-mbim-proxy-helpers.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_proxy_helpers-test-proxy-helpers.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_uuid-test-uuid.Po@am__quote@
 
 .c.o:
@@ -613,6 +650,34 @@ test_message_parser-test-message-parser.obj: test-message-parser.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-message-parser.c' object='test_message_parser-test-message-parser.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_message_parser_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_message_parser-test-message-parser.obj `if test -f 'test-message-parser.c'; then $(CYGPATH_W) 'test-message-parser.c'; else $(CYGPATH_W) '$(srcdir)/test-message-parser.c'; fi`
+
+test_proxy_helpers-test-proxy-helpers.o: test-proxy-helpers.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_proxy_helpers_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_proxy_helpers-test-proxy-helpers.o -MD -MP -MF $(DEPDIR)/test_proxy_helpers-test-proxy-helpers.Tpo -c -o test_proxy_helpers-test-proxy-helpers.o `test -f 'test-proxy-helpers.c' || echo '$(srcdir)/'`test-proxy-helpers.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_proxy_helpers-test-proxy-helpers.Tpo $(DEPDIR)/test_proxy_helpers-test-proxy-helpers.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-proxy-helpers.c' object='test_proxy_helpers-test-proxy-helpers.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_proxy_helpers_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_proxy_helpers-test-proxy-helpers.o `test -f 'test-proxy-helpers.c' || echo '$(srcdir)/'`test-proxy-helpers.c
+
+test_proxy_helpers-test-proxy-helpers.obj: test-proxy-helpers.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_proxy_helpers_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_proxy_helpers-test-proxy-helpers.obj -MD -MP -MF $(DEPDIR)/test_proxy_helpers-test-proxy-helpers.Tpo -c -o test_proxy_helpers-test-proxy-helpers.obj `if test -f 'test-proxy-helpers.c'; then $(CYGPATH_W) 'test-proxy-helpers.c'; else $(CYGPATH_W) '$(srcdir)/test-proxy-helpers.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_proxy_helpers-test-proxy-helpers.Tpo $(DEPDIR)/test_proxy_helpers-test-proxy-helpers.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-proxy-helpers.c' object='test_proxy_helpers-test-proxy-helpers.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_proxy_helpers_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_proxy_helpers-test-proxy-helpers.obj `if test -f 'test-proxy-helpers.c'; then $(CYGPATH_W) 'test-proxy-helpers.c'; else $(CYGPATH_W) '$(srcdir)/test-proxy-helpers.c'; fi`
+
+test_proxy_helpers-mbim-proxy-helpers.o: $(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_proxy_helpers_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_proxy_helpers-mbim-proxy-helpers.o -MD -MP -MF $(DEPDIR)/test_proxy_helpers-mbim-proxy-helpers.Tpo -c -o test_proxy_helpers-mbim-proxy-helpers.o `test -f '$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c' || echo '$(srcdir)/'`$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_proxy_helpers-mbim-proxy-helpers.Tpo $(DEPDIR)/test_proxy_helpers-mbim-proxy-helpers.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c' object='test_proxy_helpers-mbim-proxy-helpers.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_proxy_helpers_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_proxy_helpers-mbim-proxy-helpers.o `test -f '$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c' || echo '$(srcdir)/'`$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c
+
+test_proxy_helpers-mbim-proxy-helpers.obj: $(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_proxy_helpers_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_proxy_helpers-mbim-proxy-helpers.obj -MD -MP -MF $(DEPDIR)/test_proxy_helpers-mbim-proxy-helpers.Tpo -c -o test_proxy_helpers-mbim-proxy-helpers.obj `if test -f '$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c'; then $(CYGPATH_W) '$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_proxy_helpers-mbim-proxy-helpers.Tpo $(DEPDIR)/test_proxy_helpers-mbim-proxy-helpers.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c' object='test_proxy_helpers-mbim-proxy-helpers.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_proxy_helpers_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_proxy_helpers-mbim-proxy-helpers.obj `if test -f '$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c'; then $(CYGPATH_W) '$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/libmbim-glib/mbim-proxy-helpers.c'; fi`
 
 test_uuid-test-uuid.o: test-uuid.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_uuid_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_uuid-test-uuid.o -MD -MP -MF $(DEPDIR)/test_uuid-test-uuid.Tpo -c -o test_uuid-test-uuid.o `test -f 'test-uuid.c' || echo '$(srcdir)/'`test-uuid.c

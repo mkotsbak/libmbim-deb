@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2013 Aleksander Morgado <aleksander@gnu.org>
+ * Copyright (C) 2013 - 2014 Aleksander Morgado <aleksander@aleksander.es>
  */
 
 #include <glib.h>
@@ -62,7 +62,7 @@ mbim_message_get_type (void)
 
 /*****************************************************************************/
 
-static GByteArray *
+GByteArray *
 _mbim_message_allocate (MbimMessageType message_type,
                         guint32         transaction_id,
                         guint32         additional_size)
@@ -1007,12 +1007,7 @@ void
 mbim_message_set_transaction_id (MbimMessage *self,
                                  guint32      transaction_id)
 {
-    /* Only allow setting transaction ID in host-generated messages */
     g_return_if_fail (self != NULL);
-    g_return_if_fail (MBIM_MESSAGE_GET_MESSAGE_TYPE (self) == MBIM_MESSAGE_TYPE_COMMAND ||
-                      MBIM_MESSAGE_GET_MESSAGE_TYPE (self) == MBIM_MESSAGE_TYPE_OPEN ||
-                      MBIM_MESSAGE_GET_MESSAGE_TYPE (self) == MBIM_MESSAGE_TYPE_CLOSE ||
-                      MBIM_MESSAGE_GET_MESSAGE_TYPE (self) == MBIM_MESSAGE_TYPE_HOST_ERROR);
 
     ((struct header *)(self->data))->transaction_id = GUINT32_TO_LE (transaction_id);
 }
@@ -1198,7 +1193,7 @@ mbim_message_get_printable (const MbimMessage *self,
                                     "%s  cid     = '%s' (0x%08x)\n"
                                     "%s  type    = '%s' (0x%08x)\n",
                                     line_prefix,
-                                    line_prefix, mbim_service_get_string (mbim_message_command_get_service (self)), uuid_printable,
+                                    line_prefix, mbim_service_lookup_name (mbim_message_command_get_service (self)), uuid_printable,
                                     line_prefix, cid_printable, mbim_message_command_get_cid (self),
                                     line_prefix, mbim_message_command_type_get_string (mbim_message_command_get_command_type (self)), mbim_message_command_get_command_type (self));
             g_free (uuid_printable);
@@ -1229,7 +1224,7 @@ mbim_message_get_printable (const MbimMessage *self,
                                     "%s  cid          = '%s' (0x%08x)\n",
                                     line_prefix,
                                     line_prefix, mbim_status_error_get_string (status), status,
-                                    line_prefix, mbim_service_get_string (mbim_message_command_done_get_service (self)), uuid_printable,
+                                    line_prefix, mbim_service_lookup_name (mbim_message_command_done_get_service (self)), uuid_printable,
                                     line_prefix, cid_printable, mbim_message_command_done_get_cid (self));
             g_free (uuid_printable);
         }
@@ -1255,7 +1250,7 @@ mbim_message_get_printable (const MbimMessage *self,
                                     "%s  service = '%s' (%s)\n"
                                     "%s  cid     = '%s' (0x%08x)\n",
                                     line_prefix,
-                                    line_prefix, mbim_service_get_string (mbim_message_indicate_status_get_service (self)), uuid_printable,
+                                    line_prefix, mbim_service_lookup_name (mbim_message_indicate_status_get_service (self)), uuid_printable,
                                     line_prefix, cid_printable, mbim_message_indicate_status_get_cid (self));
             g_free (uuid_printable);
         }
@@ -1518,6 +1513,32 @@ mbim_message_open_get_max_control_transfer (const MbimMessage *self)
 /* 'Open Done' message interface */
 
 /**
+ * mbim_message_open_done_new:
+ * @transaction_id: transaction ID.
+ * @error_status_code: a #MbimStatusError.
+ *
+ * Create a new #MbimMessage of type %MBIM_MESSAGE_TYPE_OPEN_DONE with the specified
+ * parameters.
+ *
+ * Returns: (transfer full): a newly created #MbimMessage, which should be freed with mbim_message_unref().
+ */
+MbimMessage *
+mbim_message_open_done_new (guint32         transaction_id,
+                            MbimStatusError error_status_code)
+{
+    GByteArray *self;
+
+    self = _mbim_message_allocate (MBIM_MESSAGE_TYPE_OPEN_DONE,
+                                   transaction_id,
+                                   sizeof (struct open_done_message));
+
+    /* Open header */
+    ((struct full_message *)(self->data))->message.open_done.status_code = GUINT32_TO_LE (error_status_code);
+
+    return (MbimMessage *)self;
+}
+
+/**
  * mbim_message_open_done_get_status_code:
  * @self: a #MbimMessage.
  *
@@ -1586,6 +1607,32 @@ mbim_message_close_new (guint32 transaction_id)
 
 /*****************************************************************************/
 /* 'Close Done' message interface */
+
+/**
+ * mbim_message_close_done_new:
+ * @transaction_id: transaction ID.
+ * @error_status_code: a #MbimStatusError.
+ *
+ * Create a new #MbimMessage of type %MBIM_MESSAGE_TYPE_CLOSE_DONE with the specified
+ * parameters.
+ *
+ * Returns: (transfer full): a newly created #MbimMessage, which should be freed with mbim_message_unref().
+ */
+MbimMessage *
+mbim_message_close_done_new (guint32         transaction_id,
+                             MbimStatusError error_status_code)
+{
+    GByteArray *self;
+
+    self = _mbim_message_allocate (MBIM_MESSAGE_TYPE_CLOSE_DONE,
+                                   transaction_id,
+                                   sizeof (struct close_done_message));
+
+    /* Open header */
+    ((struct full_message *)(self->data))->message.close_done.status_code = GUINT32_TO_LE (error_status_code);
+
+    return (MbimMessage *)self;
+}
 
 /**
  * mbim_message_close_done_get_status_code:
@@ -1738,7 +1785,7 @@ mbim_message_command_new (guint32                transaction_id,
 
     /* Known service required */
     g_return_val_if_fail (service > MBIM_SERVICE_INVALID, FALSE);
-    g_return_val_if_fail (service <= MBIM_SERVICE_MS_HOST_SHUTDOWN, FALSE);
+    g_return_val_if_fail (service <= MBIM_SERVICE_PROXY_CONTROL, FALSE);
     service_id = mbim_uuid_from_service (service);
 
     self = _mbim_message_allocate (MBIM_MESSAGE_TYPE_COMMAND,

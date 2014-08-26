@@ -17,7 +17,8 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2013 Aleksander Morgado <aleksander@lanedo.com>
+ * Copyright (C) 2013-2014 Aleksander Morgado <aleksander@aleksander.es>
+ * Copyright (C) 2014 Smith Micro Software, Inc.
  *
  * Implementation based on the 'QmiDevice' GObject from libqmi-glib.
  */
@@ -28,6 +29,7 @@
 #include <termios.h>
 #include <unistd.h>
 #include <gio/gio.h>
+#include <gio/gunixsocketaddress.h>
 #include <gudev/gudev.h>
 #include <sys/ioctl.h>
 #define IOCTL_WDM_MAX_COMMAND _IOR('H', 0xA0, guint16)
@@ -37,6 +39,8 @@
 #include "mbim-message.h"
 #include "mbim-message-private.h"
 #include "mbim-error-types.h"
+#include "mbim-proxy.h"
+#include "mbim-proxy-control.h"
 
 /**
  * SECTION:mbim-device
@@ -67,6 +71,7 @@ static GParamSpec *properties[PROP_LAST];
 enum {
     SIGNAL_INDICATE_STATUS,
     SIGNAL_ERROR,
+    SIGNAL_REMOVED,
     SIGNAL_LAST
 };
 
@@ -78,6 +83,12 @@ typedef enum {
     TRANSACTION_TYPE_LAST  = 2
 } TransactionType;
 
+typedef enum {
+    OPEN_STATUS_CLOSED  = 0,
+    OPEN_STATUS_OPENING = 1,
+    OPEN_STATUS_OPEN    = 2
+} OpenStatus;
+
 struct _MbimDevicePrivate {
     /* File */
     GFile *file;
@@ -88,6 +99,11 @@ struct _MbimDevicePrivate {
     GIOChannel *iochannel;
     guint watch_id;
     GByteArray *response;
+    OpenStatus open_status;
+
+    /* Support for mbim-proxy */
+    GSocketClient *socket_client;
+    GSocketConnection *socket_connection;
 
     /* HT to keep track of ongoing host/function transactions
      *  Host transactions:  created by us
@@ -105,6 +121,7 @@ struct _MbimDevicePrivate {
     guint16 max_control_transfer;
 };
 
+#define MAX_SPAWN_RETRIES             10
 #define MAX_CONTROL_TRANSFER          4096
 #define MAX_TIME_BETWEEN_FRAGMENTS_MS 1250
 
@@ -123,6 +140,7 @@ typedef struct {
 
 typedef struct {
     MbimMessage *fragments;
+    MbimMessageType type;
     guint32 transaction_id;
     GSimpleAsyncResult *result;
     guint timeout_id;
@@ -133,6 +151,7 @@ typedef struct {
 
 static Transaction *
 transaction_new (MbimDevice          *self,
+                 MbimMessageType      type,
                  guint32              transaction_id,
                  GCancellable        *cancellable,
                  GAsyncReadyCallback  callback,
@@ -141,6 +160,7 @@ transaction_new (MbimDevice          *self,
     Transaction *tr;
 
     tr = g_slice_new0 (Transaction);
+    tr->type = type;
     tr->transaction_id = transaction_id;
     tr->result = g_simple_async_result_new (G_OBJECT (self),
                                             callback,
@@ -187,13 +207,14 @@ transaction_complete_and_free (Transaction  *tr,
 static Transaction *
 device_release_transaction (MbimDevice      *self,
                             TransactionType  type,
+                            MbimMessageType  expected_type,
                             guint32          transaction_id)
 {
     Transaction *tr = NULL;
 
     if (self->priv->transactions[type]) {
         tr = g_hash_table_lookup (self->priv->transactions[type], GUINT_TO_POINTER (transaction_id));
-        if (tr)
+        if (tr && ((tr->type == expected_type) || (expected_type == MBIM_MESSAGE_TYPE_INVALID)))
             /* If found, remove it from the HT */
             g_hash_table_remove (self->priv->transactions[type], GUINT_TO_POINTER (transaction_id));
     }
@@ -207,7 +228,14 @@ transaction_timed_out (TransactionWaitContext *ctx)
     Transaction *tr;
     GError *error = NULL;
 
-    tr = device_release_transaction (ctx->self, ctx->type, ctx->transaction_id);
+    tr = device_release_transaction (ctx->self,
+                                     ctx->type,
+                                     MBIM_MESSAGE_TYPE_INVALID,
+                                     ctx->transaction_id);
+    if (!tr)
+        /* transaction already completed */
+        return FALSE;
+
     tr->timeout_id = 0;
 
     /* If no fragment was received, complete transaction with a timeout error */
@@ -240,7 +268,10 @@ transaction_cancelled (GCancellable           *cancellable,
     Transaction *tr;
     GError *error = NULL;
 
-    tr = device_release_transaction (ctx->self, ctx->type, ctx->transaction_id);
+    tr = device_release_transaction (ctx->self,
+                                     ctx->type,
+                                     MBIM_MESSAGE_TYPE_INVALID,
+                                     ctx->transaction_id);
     tr->cancellable_id = 0;
 
     /* Complete transaction with an abort error */
@@ -292,15 +323,6 @@ device_store_transaction (MbimDevice       *self,
     g_hash_table_insert (self->priv->transactions[type], GUINT_TO_POINTER (tr->transaction_id), tr);
 
     return TRUE;
-}
-
-static Transaction *
-device_match_transaction (MbimDevice        *self,
-                          TransactionType    type,
-                          const MbimMessage *message)
-{
-    /* msg can be either the original message or the response */
-    return device_release_transaction (self, type, mbim_message_get_transaction_id (message));
 }
 
 /*****************************************************************************/
@@ -388,7 +410,7 @@ mbim_device_is_open (MbimDevice *self)
 {
     g_return_val_if_fail (MBIM_IS_DEVICE (self), FALSE);
 
-    return !!self->priv->iochannel;
+    return (self->priv->open_status == OPEN_STATUS_OPEN);
 }
 
 /*****************************************************************************/
@@ -417,12 +439,13 @@ static void
 process_message (MbimDevice  *self,
                  const MbimMessage *message)
 {
+    gboolean is_partial_fragment;
+
+    is_partial_fragment = (_mbim_message_is_fragment (message) &&
+                           _mbim_message_fragment_get_total (message) > 1);
+
     if (mbim_utils_get_traces_enabled ()) {
         gchar *printable;
-        gboolean is_partial_fragment;
-
-        is_partial_fragment = (_mbim_message_is_fragment (message) &&
-                               _mbim_message_fragment_get_total (message) > 1);
 
         printable = __mbim_utils_str_hex (((GByteArray *)message)->data,
                                           ((GByteArray *)message)->len,
@@ -456,20 +479,39 @@ process_message (MbimDevice  *self,
 
         if (MBIM_MESSAGE_GET_MESSAGE_TYPE (message) == MBIM_MESSAGE_TYPE_INDICATE_STATUS) {
             /* Grab transaction */
-            tr = device_match_transaction (self, TRANSACTION_TYPE_MODEM, message);
+            tr = device_release_transaction (self,
+                                             TRANSACTION_TYPE_MODEM,
+                                             MBIM_MESSAGE_TYPE_INDICATE_STATUS,
+                                             mbim_message_get_transaction_id (message));
+
             if (!tr)
                 /* Create new transaction for the indication */
                 tr = transaction_new (self,
+                                      MBIM_MESSAGE_TYPE_INDICATE_STATUS,
                                       mbim_message_get_transaction_id (message),
                                       NULL, /* no cancellable */
                                       (GAsyncReadyCallback)indication_ready,
                                       NULL);
         } else {
-            /* Grab transaction */
-            tr = device_match_transaction (self, TRANSACTION_TYPE_HOST, message);
+            /* Grab transaction. This is a _DONE message, so look for the request
+             * that generated the _DONE */
+            tr = device_release_transaction (self,
+                                             TRANSACTION_TYPE_HOST,
+                                             (MBIM_MESSAGE_GET_MESSAGE_TYPE (message) - 0x80000000),
+                                             mbim_message_get_transaction_id (message));
             if (!tr) {
+                gchar *printable;
+
                 g_debug ("[%s] No transaction matched in received message",
                          self->priv->path_display);
+                /* Attempt to print a user friendly dump of the packet anyway */
+                printable = mbim_message_get_printable (message, ">>>>>> ", is_partial_fragment);
+                if (printable) {
+                    g_debug ("[%s] Received unexpected message (translated)...\n%s",
+                             self->priv->path_display,
+                             printable);
+                    g_free (printable);
+                }
                 return;
             }
 
@@ -548,7 +590,7 @@ process_message (MbimDevice  *self,
     case MBIM_MESSAGE_TYPE_COMMAND:
     case MBIM_MESSAGE_TYPE_HOST_ERROR:
         /* Shouldn't expect host-generated messages as replies */
-        g_warning ("[%s] Host-generated message received: ignoring",
+        g_message ("[%s] Host-generated message received: ignoring",
                    self->priv->path_display);
         return;
     }
@@ -599,6 +641,7 @@ data_available (GIOChannel *source,
             g_byte_array_remove_range (self->priv->response, 0, self->priv->response->len);
 
         mbim_device_close_force (self, NULL);
+        g_signal_emit (self, signals[SIGNAL_REMOVED], 0 );
         return FALSE;
     }
 
@@ -774,100 +817,282 @@ out:
     return max;
 }
 
+typedef struct {
+    MbimDevice *self;
+    GSimpleAsyncResult *result;
+    guint spawn_retries;
+} CreateIoChannelContext;
+
+static void
+create_iochannel_context_complete_and_free (CreateIoChannelContext *ctx)
+{
+    g_simple_async_result_complete_in_idle (ctx->result);
+    g_object_unref (ctx->result);
+    g_object_unref (ctx->self);
+    g_slice_free (CreateIoChannelContext, ctx);
+}
+
 static gboolean
-create_iochannel (MbimDevice *self,
-                  GError **error)
+create_iochannel_finish (MbimDevice *self,
+                         GAsyncResult *res,
+                         GError **error)
+{
+    return !g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error);
+}
+
+static void
+setup_iochannel (CreateIoChannelContext *ctx)
 {
     GError *inner_error = NULL;
+
+    /* We don't want UTF-8 encoding, we're playing with raw binary data */
+    g_io_channel_set_encoding (ctx->self->priv->iochannel, NULL, NULL);
+
+    /* We don't want to get the channel buffered */
+    g_io_channel_set_buffered (ctx->self->priv->iochannel, FALSE);
+
+    /* Let the GIOChannel own the FD */
+    g_io_channel_set_close_on_unref (ctx->self->priv->iochannel, TRUE);
+
+    /* We don't want to get blocked while writing stuff */
+    if (!g_io_channel_set_flags (ctx->self->priv->iochannel,
+                                 G_IO_FLAG_NONBLOCK,
+                                 &inner_error)) {
+        g_simple_async_result_take_error (ctx->result, inner_error);
+        g_io_channel_shutdown (ctx->self->priv->iochannel, FALSE, NULL);
+        g_io_channel_unref (ctx->self->priv->iochannel);
+        ctx->self->priv->iochannel = NULL;
+        g_clear_object (&ctx->self->priv->socket_connection);
+        g_clear_object (&ctx->self->priv->socket_client);
+        create_iochannel_context_complete_and_free (ctx);
+        return;
+    }
+
+    ctx->self->priv->watch_id = g_io_add_watch (ctx->self->priv->iochannel,
+                                                G_IO_IN | G_IO_ERR | G_IO_HUP,
+                                                (GIOFunc)data_available,
+                                                ctx->self);
+
+    g_simple_async_result_set_op_res_gboolean (ctx->result, TRUE);
+    create_iochannel_context_complete_and_free (ctx);
+}
+
+static void
+create_iochannel_with_fd (CreateIoChannelContext *ctx)
+{
     gint fd;
     guint16 max;
 
-    if (self->priv->iochannel) {
-        g_set_error_literal (error,
-                             MBIM_CORE_ERROR,
-                             MBIM_CORE_ERROR_WRONG_STATE,
-                             "Already open");
-        return FALSE;
-    }
-
-    g_assert (self->priv->file);
-    g_assert (self->priv->path);
-
     errno = 0;
-    fd = open (self->priv->path, O_RDWR | O_EXCL | O_NONBLOCK | O_NOCTTY);
+    fd = open (ctx->self->priv->path, O_RDWR | O_EXCL | O_NONBLOCK | O_NOCTTY);
     if (fd < 0) {
-        g_set_error (error,
-                     MBIM_CORE_ERROR,
-                     MBIM_CORE_ERROR_FAILED,
-                     "Cannot open device file '%s': %s",
-                     self->priv->path_display,
-                     strerror (errno));
-        return FALSE;
+        g_simple_async_result_set_error (
+            ctx->result,
+            MBIM_CORE_ERROR,
+            MBIM_CORE_ERROR_FAILED,
+            "Cannot open device file '%s': %s",
+            ctx->self->priv->path_display,
+            strerror (errno));
+        create_iochannel_context_complete_and_free (ctx);
+        return;
     }
 
     /* Query message size */
     if (ioctl (fd, IOCTL_WDM_MAX_COMMAND, &max) < 0) {
         g_debug ("[%s] Couldn't query maximum message size: "
                  "IOCTL_WDM_MAX_COMMAND failed: %s",
-                 self->priv->path_display,
+                 ctx->self->priv->path_display,
                  strerror (errno));
         /* Fallback, try to read the descriptor file */
-        max = read_max_control_transfer (self);
+        max = read_max_control_transfer (ctx->self);
     } else {
         g_debug ("[%s] Queried max control message size: %" G_GUINT16_FORMAT,
-                 self->priv->path_display,
+                 ctx->self->priv->path_display,
                  max);
     }
-    self->priv->max_control_transfer = max;
+    ctx->self->priv->max_control_transfer = max;
 
     /* Create new GIOChannel */
-    self->priv->iochannel = g_io_channel_unix_new (fd);
+    ctx->self->priv->iochannel = g_io_channel_unix_new (fd);
 
-    /* We don't want UTF-8 encoding, we're playing with raw binary data */
-    g_io_channel_set_encoding (self->priv->iochannel, NULL, NULL);
+    setup_iochannel (ctx);
+}
 
-    /* We don't want to get the channel buffered */
-    g_io_channel_set_buffered (self->priv->iochannel, FALSE);
+static void create_iochannel_with_socket (CreateIoChannelContext *ctx);
 
-    /* Let the GIOChannel own the FD */
-    g_io_channel_set_close_on_unref (self->priv->iochannel, TRUE);
+static gboolean
+wait_for_proxy_cb (CreateIoChannelContext *ctx)
+{
+    create_iochannel_with_socket (ctx);
+    return FALSE;
+}
 
-    /* We don't want to get blocked while writing stuff */
-    if (!g_io_channel_set_flags (self->priv->iochannel,
-                                 G_IO_FLAG_NONBLOCK,
-                                 &inner_error)) {
-        g_prefix_error (&inner_error, "Cannot set non-blocking channel: ");
-        g_propagate_error (error, inner_error);
-        g_io_channel_shutdown (self->priv->iochannel, FALSE, NULL);
-        g_io_channel_unref (self->priv->iochannel);
-        self->priv->iochannel = NULL;
-        return FALSE;
+static void
+create_iochannel_with_socket (CreateIoChannelContext *ctx)
+{
+    GSocketAddress *socket_address;
+    GError *error = NULL;
+
+    /* Create socket client */
+    if (ctx->self->priv->socket_client)
+        g_object_unref (ctx->self->priv->socket_client);
+    ctx->self->priv->socket_client = g_socket_client_new ();
+    g_socket_client_set_family (ctx->self->priv->socket_client, G_SOCKET_FAMILY_UNIX);
+    g_socket_client_set_socket_type (ctx->self->priv->socket_client, G_SOCKET_TYPE_STREAM);
+    g_socket_client_set_protocol (ctx->self->priv->socket_client, G_SOCKET_PROTOCOL_DEFAULT);
+
+    /* Setup socket address */
+    socket_address = (g_unix_socket_address_new_with_type (
+                          MBIM_PROXY_SOCKET_PATH,
+                          -1,
+                          G_UNIX_SOCKET_ADDRESS_ABSTRACT));
+
+    /* Connect to address */
+    if (ctx->self->priv->socket_connection)
+        g_object_unref (ctx->self->priv->socket_connection);
+    ctx->self->priv->socket_connection = (g_socket_client_connect (
+                                              ctx->self->priv->socket_client,
+                                              G_SOCKET_CONNECTABLE (socket_address),
+                                              NULL,
+                                              &error));
+    g_object_unref (socket_address);
+
+    if (!ctx->self->priv->socket_connection) {
+        gchar **argc;
+
+        g_debug ("cannot connect to proxy: %s", error->message);
+        g_clear_error (&error);
+        g_clear_object (&ctx->self->priv->socket_client);
+
+        /* Don't retry forever */
+        ctx->spawn_retries++;
+        if (ctx->spawn_retries > MAX_SPAWN_RETRIES) {
+            g_simple_async_result_set_error (ctx->result,
+                                             MBIM_CORE_ERROR,
+                                             MBIM_CORE_ERROR_FAILED,
+                                             "Couldn't spawn the mbim-proxy");
+            create_iochannel_context_complete_and_free (ctx);
+            return;
+        }
+
+        g_debug ("spawning new mbim-proxy (try %u)...", ctx->spawn_retries);
+
+        argc = g_new0 (gchar *, 2);
+        argc[0] = g_strdup (LIBEXEC_PATH "/mbim-proxy");
+        if (!g_spawn_async (NULL, /* working directory */
+                            argc,
+                            NULL, /* envp */
+                            G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
+                            NULL, /* child_setup */
+                            NULL, /* child_setup_user_data */
+                            NULL,
+                            &error)) {
+            g_debug ("error spawning mbim-proxy: %s", error->message);
+            g_clear_error (&error);
+        }
+        g_strfreev (argc);
+
+        /* Wait some ms and retry */
+        g_timeout_add (100, (GSourceFunc)wait_for_proxy_cb, ctx);
+        return;
     }
 
-    self->priv->watch_id = g_io_add_watch (self->priv->iochannel,
-                                           G_IO_IN | G_IO_ERR | G_IO_HUP,
-                                           (GIOFunc)data_available,
-                                           self);
+    ctx->self->priv->iochannel = g_io_channel_unix_new (
+                                     g_socket_get_fd (
+                                         g_socket_connection_get_socket (ctx->self->priv->socket_connection)));
 
-    return !!self->priv->iochannel;
+    /* try to read the descriptor file */
+    ctx->self->priv->max_control_transfer = read_max_control_transfer (ctx->self);
+
+    setup_iochannel (ctx);
 }
+
+static void
+create_iochannel (MbimDevice           *self,
+                  gboolean              proxy,
+                  GAsyncReadyCallback   callback,
+                  gpointer              user_data)
+{
+    CreateIoChannelContext *ctx;
+
+    ctx = g_slice_new (CreateIoChannelContext);
+    ctx->self = g_object_ref (self);
+    ctx->result = g_simple_async_result_new (G_OBJECT (self),
+                                             callback,
+                                             user_data,
+                                             create_iochannel);
+    ctx->spawn_retries = 0;
+
+    if (self->priv->iochannel) {
+        g_simple_async_result_set_error (ctx->result,
+                                         MBIM_CORE_ERROR,
+                                         MBIM_CORE_ERROR_WRONG_STATE,
+                                         "Already open");
+        create_iochannel_context_complete_and_free (ctx);
+        return;
+    }
+
+    g_assert (self->priv->file);
+    g_assert (self->priv->path);
+
+    if (proxy)
+        create_iochannel_with_socket (ctx);
+    else
+        create_iochannel_with_fd (ctx);
+}
+
+typedef enum {
+    DEVICE_OPEN_CONTEXT_STEP_FIRST = 0,
+    DEVICE_OPEN_CONTEXT_STEP_CREATE_IOCHANNEL,
+    DEVICE_OPEN_CONTEXT_STEP_FLAGS_PROXY,
+    DEVICE_OPEN_CONTEXT_STEP_OPEN_MESSAGE,
+    DEVICE_OPEN_CONTEXT_STEP_LAST
+} DeviceOpenContextStep;
 
 typedef struct {
     MbimDevice *self;
     GSimpleAsyncResult *result;
     GCancellable *cancellable;
+    DeviceOpenContextStep step;
+    MbimDeviceOpenFlags flags;
     guint timeout;
 } DeviceOpenContext;
 
 static void
-device_open_context_complete_and_free (DeviceOpenContext *ctx)
+device_open_context_complete_and_free (DeviceOpenContext *ctx,
+                                       GError            *error)
 {
+    if (error)
+        g_simple_async_result_take_error (ctx->result, error);
+    else
+        g_simple_async_result_set_op_res_gboolean (ctx->result, TRUE);
+
     g_simple_async_result_complete_in_idle (ctx->result);
     g_object_unref (ctx->result);
     if (ctx->cancellable)
         g_object_unref (ctx->cancellable);
     g_object_unref (ctx->self);
     g_slice_free (DeviceOpenContext, ctx);
+}
+
+static void device_open_context_step (DeviceOpenContext *ctx);
+
+/**
+ * mbim_device_open_full_finish:
+ * @self: a #MbimDevice.
+ * @res: a #GAsyncResult.
+ * @error: Return location for error or %NULL.
+ *
+ * Finishes an asynchronous open operation started with mbim_device_open_full().
+ *
+ * Returns: %TRUE if successful, %FALSE if @error is set.
+ */
+gboolean
+mbim_device_open_full_finish (MbimDevice    *self,
+                              GAsyncResult  *res,
+                              GError       **error)
+{
+    return !g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error);
 }
 
 /**
@@ -882,10 +1107,10 @@ device_open_context_complete_and_free (DeviceOpenContext *ctx)
  */
 gboolean
 mbim_device_open_finish (MbimDevice   *self,
-                        GAsyncResult  *res,
-                        GError       **error)
+                         GAsyncResult  *res,
+                         GError       **error)
 {
-    return !g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error);
+    return mbim_device_open_full_finish (self, res, error);
 }
 
 static void open_message (DeviceOpenContext *ctx);
@@ -913,15 +1138,25 @@ open_message_ready (MbimDevice        *self,
             /* No more seconds left in the timeout... return error */
         }
 
-        g_simple_async_result_take_error (ctx->result, error);
-    } else if (!mbim_message_open_done_get_result (response, &error))
-        g_simple_async_result_take_error (ctx->result, error);
-    else
-        g_simple_async_result_set_op_res_gboolean (ctx->result, TRUE);
+        g_debug ("open operation timed out: closed");
+        self->priv->open_status = OPEN_STATUS_CLOSED;
+        device_open_context_complete_and_free (ctx, error);
+        return;
+    }
 
-    if (response)
+    if (!mbim_message_open_done_get_result (response, &error)) {
+        g_debug ("getting open done result failed: closed");
+        self->priv->open_status = OPEN_STATUS_CLOSED;
+        device_open_context_complete_and_free (ctx, error);
         mbim_message_unref (response);
-    device_open_context_complete_and_free (ctx);
+        return;
+    }
+
+    mbim_message_unref (response);
+
+    /* go on */
+    ctx->step++;
+    device_open_context_step (ctx);
 }
 
 static void
@@ -939,6 +1174,181 @@ open_message (DeviceOpenContext *ctx)
                          (GAsyncReadyCallback)open_message_ready,
                          ctx);
     mbim_message_unref (request);
+}
+
+static void
+proxy_cfg_message_ready (MbimDevice        *self,
+                         GAsyncResult      *res,
+                         DeviceOpenContext *ctx)
+{
+    MbimMessage *response;
+    GError *error = NULL;
+
+    response = mbim_device_command_finish (self, res, &error);
+    if (!response) {
+        /* Hard error if proxy cfg command fails */
+        g_debug ("proxy configuration failed: closed");
+        self->priv->open_status = OPEN_STATUS_CLOSED;
+        device_open_context_complete_and_free (ctx, error);
+        return;
+    }
+
+    mbim_message_unref (response);
+
+    ctx->step++;
+    device_open_context_step (ctx);
+}
+
+static void
+proxy_cfg_message (DeviceOpenContext *ctx)
+{
+    GError *error = NULL;
+    MbimMessage *request;
+
+    request = mbim_message_proxy_control_configuration_set_new (ctx->self->priv->path, ctx->timeout, &error);
+
+    /* This message is no longer a direct reply; as the proxy will also try to open the device
+     * directly. If it cannot open the device, it will return an error. */
+    mbim_device_command (ctx->self,
+                         request,
+                         ctx->timeout,
+                         ctx->cancellable,
+                         (GAsyncReadyCallback)proxy_cfg_message_ready,
+                         ctx);
+    mbim_message_unref (request);
+}
+
+static void
+create_iochannel_ready (MbimDevice *self,
+                        GAsyncResult *res,
+                        DeviceOpenContext *ctx)
+{
+    GError *error = NULL;
+
+    if (!create_iochannel_finish (self, res, &error)) {
+        g_debug ("creating iochannel failed: closed");
+        self->priv->open_status = OPEN_STATUS_CLOSED;
+        device_open_context_complete_and_free (ctx, error);
+        return;
+    }
+
+    /* Go on */
+    ctx->step++;
+    device_open_context_step (ctx);
+}
+
+static void
+device_open_context_step (DeviceOpenContext *ctx)
+{
+    switch (ctx->step) {
+    case DEVICE_OPEN_CONTEXT_STEP_FIRST:
+        if (ctx->self->priv->open_status == OPEN_STATUS_OPEN) {
+            GError *error;
+
+            error = g_error_new (MBIM_CORE_ERROR,
+                                 MBIM_CORE_ERROR_WRONG_STATE,
+                                 "Already open");
+            device_open_context_complete_and_free (ctx, error);
+            return;
+        }
+
+        if (ctx->self->priv->open_status == OPEN_STATUS_OPENING) {
+            GError *error;
+
+            error = g_error_new (MBIM_CORE_ERROR,
+                                 MBIM_CORE_ERROR_WRONG_STATE,
+                                 "Already opening");
+            device_open_context_complete_and_free (ctx, error);
+            return;
+        }
+
+        g_debug ("opening device...");
+        g_assert (ctx->self->priv->open_status == OPEN_STATUS_CLOSED);
+        ctx->self->priv->open_status = OPEN_STATUS_OPENING;
+
+        ctx->step++;
+        /* Fall down */
+
+    case DEVICE_OPEN_CONTEXT_STEP_CREATE_IOCHANNEL:
+        create_iochannel (ctx->self,
+                          !!(ctx->flags & MBIM_DEVICE_OPEN_FLAGS_PROXY),
+                          (GAsyncReadyCallback)create_iochannel_ready,
+                          ctx);
+        return;
+
+    case DEVICE_OPEN_CONTEXT_STEP_FLAGS_PROXY:
+        if (ctx->flags & MBIM_DEVICE_OPEN_FLAGS_PROXY) {
+            proxy_cfg_message (ctx);
+            return;
+        }
+        ctx->step++;
+        /* Fall down */
+
+    case DEVICE_OPEN_CONTEXT_STEP_OPEN_MESSAGE:
+        /* If the device is already in-session, avoid the open message */
+        if (!ctx->self->priv->in_session) {
+            open_message (ctx);
+            return;
+        }
+        ctx->step++;
+        /* Fall down */
+
+    case DEVICE_OPEN_CONTEXT_STEP_LAST:
+        /* Nothing else to process, complete without error */
+        ctx->self->priv->open_status = OPEN_STATUS_OPEN;
+        device_open_context_complete_and_free (ctx, NULL);
+        return;
+
+    default:
+        break;
+    }
+
+    g_assert_not_reached ();
+}
+
+/**
+ * mbim_device_open_full:
+ * @self: a #MbimDevice.
+ * @flags: a set of #MbimDeviceOpenFlags.
+ * @timeout: maximum time, in seconds, to wait for the device to be opened.
+ * @cancellable: optional #GCancellable object, #NULL to ignore.
+ * @callback: a #GAsyncReadyCallback to call when the operation is finished.
+ * @user_data: the data to pass to callback function.
+ *
+ * Asynchronously opens a #MbimDevice for I/O.
+ *
+ * This method is an extension of the generic mbim_device_open(), which allows
+ * launching the #MbimDevice with proxy support.
+ *
+ * When the operation is finished @callback will be called. You can then call
+ * mbim_device_open_full_finish() to get the result of the operation.
+ */
+void
+mbim_device_open_full (MbimDevice          *self,
+                       MbimDeviceOpenFlags  flags,
+                       guint                timeout,
+                       GCancellable        *cancellable,
+                       GAsyncReadyCallback  callback,
+                       gpointer             user_data)
+{
+    DeviceOpenContext *ctx;
+
+    g_return_if_fail (MBIM_IS_DEVICE (self));
+    g_return_if_fail (timeout > 0);
+
+    ctx = g_slice_new (DeviceOpenContext);
+    ctx->self = g_object_ref (self);
+    ctx->result = g_simple_async_result_new (G_OBJECT (self),
+                                             callback,
+                                             user_data,
+                                             mbim_device_open_full);
+    ctx->step = DEVICE_OPEN_CONTEXT_STEP_FIRST;
+    ctx->flags = flags;
+    ctx->timeout = timeout;
+    ctx->cancellable = (cancellable ? g_object_ref (cancellable) : NULL);
+
+    /* Start processing */
+    device_open_context_step (ctx);
 }
 
 /**
@@ -961,37 +1371,12 @@ mbim_device_open (MbimDevice          *self,
                   GAsyncReadyCallback  callback,
                   gpointer             user_data)
 {
-    DeviceOpenContext *ctx;
-    GError *error = NULL;
-
-    g_return_if_fail (MBIM_IS_DEVICE (self));
-    g_return_if_fail (timeout > 0);
-
-    ctx = g_slice_new (DeviceOpenContext);
-    ctx->self = g_object_ref (self);
-    ctx->result = g_simple_async_result_new (G_OBJECT (self),
-                                             callback,
-                                             user_data,
-                                             mbim_device_open);
-    ctx->timeout = timeout;
-    ctx->cancellable = (cancellable ? g_object_ref (cancellable) : NULL);
-
-    if (!create_iochannel (self, &error)) {
-        g_prefix_error (&error,
-                        "Cannot open MBIM device: ");
-        g_simple_async_result_take_error (ctx->result, error);
-        device_open_context_complete_and_free (ctx);
-        return;
-    }
-
-    /* If the device is already in-session, avoid the open message */
-    if (self->priv->in_session) {
-        g_simple_async_result_set_op_res_gboolean (ctx->result, TRUE);
-        device_open_context_complete_and_free (ctx);
-        return;
-    }
-
-    open_message (ctx);
+    mbim_device_open_full (self,
+                           MBIM_DEVICE_OPEN_FLAGS_NONE,
+                           timeout,
+                           cancellable,
+                           callback,
+                           user_data);
 }
 
 /*****************************************************************************/
@@ -1003,11 +1388,21 @@ destroy_iochannel (MbimDevice  *self,
 {
     GError *inner_error = NULL;
 
-    g_io_channel_shutdown (self->priv->iochannel, TRUE, &inner_error);
+    self->priv->open_status = OPEN_STATUS_CLOSED;
+
+    /* Already closed? */
+    if (!self->priv->iochannel && !self->priv->socket_connection && !self->priv->socket_client)
+        return TRUE;
+
+    if (self->priv->iochannel) {
+        g_io_channel_shutdown (self->priv->iochannel, TRUE, &inner_error);
+        g_io_channel_unref (self->priv->iochannel);
+        self->priv->iochannel = NULL;
+    }
 
     /* Failures when closing still make the device to get closed */
-    g_io_channel_unref (self->priv->iochannel);
-    self->priv->iochannel = NULL;
+    g_clear_object (&self->priv->socket_connection);
+    g_clear_object (&self->priv->socket_client);
 
     if (self->priv->watch_id) {
         g_source_remove (self->priv->watch_id);
@@ -1041,10 +1436,6 @@ mbim_device_close_force (MbimDevice *self,
                          GError **error)
 {
     g_return_val_if_fail (MBIM_IS_DEVICE (self), FALSE);
-
-    /* Already closed? */
-    if (!self->priv->iochannel)
-        return TRUE;
 
     return destroy_iochannel (self, error);
 }
@@ -1466,6 +1857,7 @@ mbim_device_command (MbimDevice          *self,
     }
 
     tr = transaction_new (self,
+                          MBIM_MESSAGE_GET_MESSAGE_TYPE (message),
                           transaction_id,
                           cancellable,
                           callback,
@@ -1491,7 +1883,10 @@ mbim_device_command (MbimDevice          *self,
 
     if (!device_send (self, message, &error)) {
         /* Match transaction so that we remove it from our tracking table */
-        tr = device_match_transaction (self, TRANSACTION_TYPE_HOST, message);
+        tr = device_release_transaction (self,
+                                         TRANSACTION_TYPE_HOST,
+                                         MBIM_MESSAGE_GET_MESSAGE_TYPE (message),
+                                         mbim_message_get_transaction_id (message));
         transaction_complete_and_free (tr, error);
         g_error_free (error);
         return;
@@ -1715,6 +2110,7 @@ mbim_device_init (MbimDevice *self)
 
     /* Initialize transaction ID */
     self->priv->transaction_id = 0x01;
+    self->priv->open_status = OPEN_STATUS_CLOSED;
 }
 
 static void
@@ -1723,6 +2119,8 @@ dispose (GObject *object)
     MbimDevice *self = MBIM_DEVICE (object);
 
     g_clear_object (&self->priv->file);
+
+    destroy_iochannel (self, NULL);
 
     G_OBJECT_CLASS (mbim_device_parent_class)->dispose (object);
 }
@@ -1739,17 +2137,12 @@ finalize (GObject *object)
         if (self->priv->transactions[i]) {
             g_assert (g_hash_table_size (self->priv->transactions[i]) == 0);
             g_hash_table_unref (self->priv->transactions[i]);
+            self->priv->transactions[i] = NULL;
         }
     }
 
     g_free (self->priv->path);
     g_free (self->priv->path_display);
-    if (self->priv->watch_id)
-        g_source_remove (self->priv->watch_id);
-    if (self->priv->response)
-        g_byte_array_unref (self->priv->response);
-    if (self->priv->iochannel)
-        g_io_channel_unref (self->priv->iochannel);
 
     G_OBJECT_CLASS (mbim_device_parent_class)->finalize (object);
 }
@@ -1836,4 +2229,22 @@ mbim_device_class_init (MbimDeviceClass *klass)
                       G_TYPE_NONE,
                       1,
                       G_TYPE_ERROR);
+
+  /**
+   * MbimDevice::device-removed:
+   * @self: the #MbimDevice
+   * @message: None
+   *
+   * The ::device-removed signal is emitted when an unexpected port hang-up is received.
+   */
+    signals[SIGNAL_REMOVED] =
+        g_signal_new (MBIM_DEVICE_SIGNAL_REMOVED,
+                      G_OBJECT_CLASS_TYPE (G_OBJECT_CLASS (klass)),
+                      G_SIGNAL_RUN_LAST,
+                      0,
+                      NULL,
+                      NULL,
+                      NULL,
+                      G_TYPE_NONE,
+                      0);
 }

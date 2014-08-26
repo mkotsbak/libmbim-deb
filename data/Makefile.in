@@ -227,6 +227,8 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MBIMCLI_CFLAGS = @MBIMCLI_CFLAGS@
 MBIMCLI_LIBS = @MBIMCLI_LIBS@
+MBIMPROXY_CFLAGS = @MBIMPROXY_CFLAGS@
+MBIMPROXY_LIBS = @MBIMPROXY_LIBS@
 MBIM_GLIB_LT_AGE = @MBIM_GLIB_LT_AGE@
 MBIM_GLIB_LT_CURRENT = @MBIM_GLIB_LT_CURRENT@
 MBIM_GLIB_LT_REVISION = @MBIM_GLIB_LT_REVISION@
@@ -320,7 +322,8 @@ EXTRA_DIST = \
 	mbim-service-stk.json \
 	mbim-service-dss.json \
 	mbim-service-ms-firmware-id.json \
-	mbim-service-ms-host-shutdown.json
+	mbim-service-ms-host-shutdown.json \
+	mbim-service-proxy-control.json
 
 all: all-recursive
 
