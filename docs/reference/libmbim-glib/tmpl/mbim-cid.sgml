@@ -126,6 +126,14 @@ mbim-cid
 @MBIM_CID_MS_HOST_SHUTDOWN_UNKNOWN: 
 @MBIM_CID_MS_HOST_SHUTDOWN_NOTIFY: 
 
+<!-- ##### ENUM MbimCidProxyControl ##### -->
+<para>
+
+</para>
+
+@MBIM_CID_PROXY_CONTROL_UNKNOWN: 
+@MBIM_CID_PROXY_CONTROL_CONFIGURATION: 
+
 <!-- ##### FUNCTION mbim_cid_can_set ##### -->
 <para>
 
@@ -239,6 +247,15 @@ mbim-cid
 
 
 <!-- ##### FUNCTION mbim_cid_ms_host_shutdown_get_string ##### -->
+<para>
+
+</para>
+
+@val: 
+@Returns: 
+
+
+<!-- ##### FUNCTION mbim_cid_proxy_control_get_string ##### -->
 <para>
 
 </para>

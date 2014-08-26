@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2013 Aleksander Morgado <aleksander@gnu.org>
+ * Copyright (C) 2013 - 2014 Aleksander Morgado <aleksander@aleksander.es>
  *
  * This is a private non-installed header
  */
@@ -127,6 +127,10 @@ struct full_message {
         struct indicate_status_message indicate_status;
     } message;
 } __attribute__((packed));
+
+/*****************************************************************************/
+/* Message creation */
+GByteArray *_mbim_message_allocate (MbimMessageType message_type, guint32 transaction_id, guint32 additional_size);
 
 /*****************************************************************************/
 /* Fragment interface */

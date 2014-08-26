@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2013 Aleksander Morgado <aleksander@gnu.org>
+ * Copyright (C) 2013 - 2014 Aleksander Morgado <aleksander@aleksander.es>
  */
 
 #ifndef _LIBMBIM_GLIB_MBIM_CID_H_
@@ -206,6 +206,18 @@ typedef enum {
     MBIM_CID_MS_HOST_SHUTDOWN_UNKNOWN = 0,
     MBIM_CID_MS_HOST_SHUTDOWN_NOTIFY  = 1
 } MbimCidMsHostShutdown;
+
+/**
+ * MbimCidProxyControl:
+ * @MBIM_CID_PROXY_CONTROL_UNKNOWN: Unknown command.
+ * @MBIM_CID_PROXY_CONTROL_CONFIGURATION: Configuration.
+ *
+ * MBIM commands in the %MBIM_SERVICE_PROXY_CONTROL service.
+ */
+typedef enum {
+    MBIM_CID_PROXY_CONTROL_UNKNOWN       = 0,
+    MBIM_CID_PROXY_CONTROL_CONFIGURATION = 1
+} MbimCidProxyControl;
 
 /* Command helpers */
 

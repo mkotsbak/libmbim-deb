@@ -37,6 +37,7 @@ mbim-uuid
 @MBIM_SERVICE_DSS: 
 @MBIM_SERVICE_MS_FIRMWARE_ID: 
 @MBIM_SERVICE_MS_HOST_SHUTDOWN: 
+@MBIM_SERVICE_PROXY_CONTROL: 
 
 <!-- ##### ENUM MbimContextType ##### -->
 <para>
@@ -130,12 +131,56 @@ mbim-uuid
 
 
 
+<!-- ##### MACRO MBIM_UUID_PROXY_CONTROL ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### FUNCTION mbim_service_get_string ##### -->
 <para>
 
 </para>
 
 @val: 
+@Returns: 
+
+
+<!-- ##### FUNCTION mbim_service_lookup_name ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION mbim_register_custom_service ##### -->
+<para>
+
+</para>
+
+@uuid: 
+@nickname: 
+@Returns: 
+
+
+<!-- ##### FUNCTION mbim_unregister_custom_service ##### -->
+<para>
+
+</para>
+
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION mbim_service_id_is_custom ##### -->
+<para>
+
+</para>
+
+@id: 
 @Returns: 
 
 

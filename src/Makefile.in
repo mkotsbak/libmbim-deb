@@ -227,6 +227,8 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MBIMCLI_CFLAGS = @MBIMCLI_CFLAGS@
 MBIMCLI_LIBS = @MBIMCLI_LIBS@
+MBIMPROXY_CFLAGS = @MBIMPROXY_CFLAGS@
+MBIMPROXY_LIBS = @MBIMPROXY_LIBS@
 MBIM_GLIB_LT_AGE = @MBIM_GLIB_LT_AGE@
 MBIM_GLIB_LT_CURRENT = @MBIM_GLIB_LT_CURRENT@
 MBIM_GLIB_LT_REVISION = @MBIM_GLIB_LT_REVISION@
@@ -310,7 +312,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = libmbim-glib mbimcli
+SUBDIRS = libmbim-glib mbimcli mbim-proxy
 all: all-recursive
 
 .SUFFIXES:

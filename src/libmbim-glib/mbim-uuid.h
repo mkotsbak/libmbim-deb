@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2013 Aleksander Morgado <aleksander@gnu.org>
+ * Copyright (C) 2013 - 2014 Aleksander Morgado <aleksander@aleksander.es>
  */
 
 #ifndef _LIBMBIM_GLIB_MBIM_UUID_H_
@@ -70,6 +70,7 @@ gboolean  mbim_uuid_from_printable (const gchar *str,
  * @MBIM_SERVICE_DSS: Device Service Stream service.
  * @MBIM_SERVICE_MS_FIRMWARE_ID: Microsoft Firmware ID service.
  * @MBIM_SERVICE_MS_HOST_SHUTDOWN: Microsoft Host Shutdown service.
+ * @MBIM_SERVICE_PROXY_CONTROL: Proxy Control service.
  *
  * Enumeration of the generic MBIM services.
  */
@@ -84,6 +85,8 @@ typedef enum {
     MBIM_SERVICE_DSS              = 7,
     MBIM_SERVICE_MS_FIRMWARE_ID   = 8,
     MBIM_SERVICE_MS_HOST_SHUTDOWN = 9,
+    MBIM_SERVICE_PROXY_CONTROL    = 10,
+    /* Note: update MBIM_SERVICE_LAST when a new value is added */
 } MbimService;
 
 /**
@@ -176,6 +179,24 @@ typedef enum {
  */
 #define MBIM_UUID_MS_HOST_SHUTDOWN mbim_uuid_from_service (MBIM_SERVICE_MS_HOST_SHUTDOWN)
 
+/**
+ * MBIM_UUID_PROXY_CONTROL:
+ *
+ * Get the UUID of the %MBIM_SERVICE_PROXY_CONTROL service.
+ *
+ * Returns: (transfer none): a #MbimUuid.
+ */
+#define MBIM_UUID_PROXY_CONTROL mbim_uuid_from_service (MBIM_SERVICE_PROXY_CONTROL)
+
+const gchar *mbim_service_lookup_name (guint service);
+
+guint mbim_register_custom_service (const MbimUuid *uuid,
+                                    const gchar *nickname);
+
+gboolean mbim_unregister_custom_service (const guint id);
+
+gboolean mbim_service_id_is_custom (const guint id);
+
 /* To/From service */
 const MbimUuid *mbim_uuid_from_service  (MbimService     service);
 MbimService     mbim_uuid_to_service    (const MbimUuid *uuid);
@@ -209,6 +230,8 @@ typedef enum {
     MBIM_CONTEXT_TYPE_MMS         = 8,
     MBIM_CONTEXT_TYPE_LOCAL       = 9,
 } MbimContextType;
+
+const gchar *mbim_context_type_get_string (MbimContextType val);
 
 /* To/From context type */
 const MbimUuid  *mbim_uuid_from_context_type (MbimContextType  context_type);

@@ -17,7 +17,7 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301 USA.
  *
- * Copyright (C) 2013 Aleksander Morgado <aleksander@lanedo.com>
+ * Copyright (C) 2013 - 2014 Aleksander Morgado <aleksander@aleksander.es>
  */
 
 #ifndef _LIBMBIM_GLIB_MBIM_DEVICE_H_
@@ -51,6 +51,7 @@ typedef struct _MbimDevicePrivate MbimDevicePrivate;
 
 #define MBIM_DEVICE_SIGNAL_INDICATE_STATUS "device-indicate-status"
 #define MBIM_DEVICE_SIGNAL_ERROR           "device-error"
+#define MBIM_DEVICE_SIGNAL_REMOVED         "device-removed"
 
 /**
  * MbimDevice:
@@ -83,6 +84,28 @@ GFile       *mbim_device_peek_file        (MbimDevice *self);
 const gchar *mbim_device_get_path         (MbimDevice *self);
 const gchar *mbim_device_get_path_display (MbimDevice *self);
 gboolean     mbim_device_is_open          (MbimDevice *self);
+
+/**
+ * MbimDeviceOpenFlags:
+ * @MBIM_DEVICE_OPEN_FLAGS_NONE: None.
+ * @MBIM_DEVICE_OPEN_FLAGS_PROXY: Try to open the port through the 'mbim-proxy'.
+ *
+ * Flags to specify which actions to be performed when the device is open.
+ */
+typedef enum {
+    MBIM_DEVICE_OPEN_FLAGS_NONE  = 0,
+    MBIM_DEVICE_OPEN_FLAGS_PROXY = 1 << 0
+} MbimDeviceOpenFlags;
+
+void     mbim_device_open_full        (MbimDevice           *self,
+                                       MbimDeviceOpenFlags   flags,
+                                       guint                 timeout,
+                                       GCancellable         *cancellable,
+                                       GAsyncReadyCallback   callback,
+                                       gpointer              user_data);
+gboolean mbim_device_open_full_finish (MbimDevice           *self,
+                                       GAsyncResult         *res,
+                                       GError              **error);
 
 void     mbim_device_open        (MbimDevice           *self,
                                   guint                 timeout,
