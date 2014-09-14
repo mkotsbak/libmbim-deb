@@ -9,6 +9,7 @@ libmbim (1.10.0-1) UNRELEASED; urgency=low
   [ Michael Biebl ]
   * Use dh_install --list-missing to show uninstalled files.
   * Install man pages via dh_install.
+  * Drop obsolete --with-tests configure option.
 
  -- Marius B. Kotsbak <marius@kotsbak.com>  Tue, 26 Aug 2014 14:41:47 +0200
 
