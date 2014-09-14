@@ -3,6 +3,7 @@ libmbim (1.10.0-1) UNRELEASED; urgency=low
   [ Marius B. Kotsbak ]
   * New upstream release.
   * Rename libmbim-glib0 → libmbim-glib4 for the soname bump.
+  * Add new package libmbim-proxy holding mbim-proxy binary.
 
  -- Marius B. Kotsbak <marius@kotsbak.com>  Tue, 26 Aug 2014 14:41:47 +0200
 
