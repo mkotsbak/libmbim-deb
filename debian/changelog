@@ -1,3 +1,10 @@
+libmbim (1.10.0-1) UNRELEASED; urgency=low
+
+  [ Marius B. Kotsbak ]
+  * New upstream release.
+
+ -- Marius B. Kotsbak <marius@kotsbak.com>  Tue, 26 Aug 2014 14:41:47 +0200
+
 libmbim (1.8.0-1) unstable; urgency=medium
 
   * New upstream release.
