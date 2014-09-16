@@ -1,4 +1,4 @@
-libmbim-glib.so.4 libmbim-glib4 #MINVER#
+libmbim-glib.so.4 libmbim-glib4 #MINVER#, libmbim-proxy
  mbim_activation_command_get_string@Base 1.10.0
  mbim_activation_command_get_type@Base 1.10.0
  mbim_activation_state_get_string@Base 1.10.0

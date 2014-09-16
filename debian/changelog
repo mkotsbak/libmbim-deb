@@ -3,6 +3,10 @@ libmbim (1.10.0-2) UNRELEASED; urgency=medium
   * Team upload.
   * Use a strictly versioned dependency between libmbim-proxy and
     libmbim-glib4, so the two packages don't get out of sync.
+  * Make any package linking against libmbim-glib4 get an explicit dependency
+    on libmbim-proxy. The mbim-proxy binary is used internally by
+    libmbim-glib4 and the package split is an implementation detail to
+    properly support multi-arch. Convince lintian that this is intentional.
 
  -- Michael Biebl <biebl@debian.org>  Tue, 16 Sep 2014 22:49:46 +0200
 
