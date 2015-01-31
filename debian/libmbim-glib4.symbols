@@ -121,6 +121,7 @@ libmbim-glib.so.4 libmbim-glib4 #MINVER#, libmbim-proxy
  mbim_message_error_get_error@Base 1.10.0
  mbim_message_error_get_error_status_code@Base 1.10.0
  mbim_message_error_new@Base 1.10.0
+ mbim_message_function_error_new@Base 1.12.2
  mbim_message_get_message_length@Base 1.10.0
  mbim_message_get_message_type@Base 1.10.0
  mbim_message_get_printable@Base 1.10.0
@@ -195,6 +196,7 @@ libmbim-glib.so.4 libmbim-glib4 #MINVER#, libmbim-proxy
  mbim_message_register_state_query_new@Base 1.10.0
  mbim_message_register_state_response_parse@Base 1.10.0
  mbim_message_register_state_set_new@Base 1.10.0
+ mbim_message_response_get_result@Base 1.12.2
  mbim_message_service_activation_response_parse@Base 1.10.0
  mbim_message_service_activation_set_new@Base 1.10.0
  mbim_message_set_transaction_id@Base 1.10.0
