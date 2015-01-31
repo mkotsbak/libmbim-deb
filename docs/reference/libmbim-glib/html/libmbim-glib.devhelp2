@@ -108,6 +108,7 @@
     <keyword type="function" name="mbim_message_close_done_get_status_code ()" link="MbimMessage.html#mbim-message-close-done-get-status-code"/>
     <keyword type="function" name="mbim_message_close_done_get_result ()" link="MbimMessage.html#mbim-message-close-done-get-result"/>
     <keyword type="function" name="mbim_message_error_new ()" link="MbimMessage.html#mbim-message-error-new"/>
+    <keyword type="function" name="mbim_message_function_error_new ()" link="MbimMessage.html#mbim-message-function-error-new"/>
     <keyword type="function" name="mbim_message_error_get_error_status_code ()" link="MbimMessage.html#mbim-message-error-get-error-status-code"/>
     <keyword type="function" name="mbim_message_error_get_error ()" link="MbimMessage.html#mbim-message-error-get-error"/>
     <keyword type="function" name="mbim_message_command_new ()" link="MbimMessage.html#mbim-message-command-new"/>
@@ -128,6 +129,7 @@
     <keyword type="function" name="mbim_message_indicate_status_get_service_id ()" link="MbimMessage.html#mbim-message-indicate-status-get-service-id"/>
     <keyword type="function" name="mbim_message_indicate_status_get_cid ()" link="MbimMessage.html#mbim-message-indicate-status-get-cid"/>
     <keyword type="function" name="mbim_message_indicate_status_get_raw_information_buffer ()" link="MbimMessage.html#mbim-message-indicate-status-get-raw-information-buffer"/>
+    <keyword type="function" name="mbim_message_response_get_result ()" link="MbimMessage.html#mbim-message-response-get-result"/>
     <keyword type="struct" name="MbimMessage" link="MbimMessage.html#MbimMessage-struct"/>
     <keyword type="enum" name="enum MbimMessageType" link="MbimMessage.html#MbimMessageType"/>
     <keyword type="struct" name="struct MbimIPv4" link="MbimMessage.html#MbimIPv4"/>

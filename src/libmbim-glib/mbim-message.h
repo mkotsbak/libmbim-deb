@@ -156,6 +156,8 @@ gboolean         mbim_message_close_done_get_result      (const MbimMessage  *se
 
 MbimMessage       *mbim_message_error_new                   (guint32            transaction_id,
                                                              MbimProtocolError  error_status_code);
+MbimMessage       *mbim_message_function_error_new          (guint32            transaction_id,
+                                                             MbimProtocolError  error_status_code);
 MbimProtocolError  mbim_message_error_get_error_status_code (const MbimMessage *self);
 GError            *mbim_message_error_get_error             (const MbimMessage *self);
 
@@ -211,6 +213,13 @@ const MbimUuid  *mbim_message_indicate_status_get_service_id             (const 
 guint32          mbim_message_indicate_status_get_cid                    (const MbimMessage  *self);
 const guint8    *mbim_message_indicate_status_get_raw_information_buffer (const MbimMessage  *self,
                                                                           guint32            *length);
+
+/*****************************************************************************/
+/* Other helpers */
+
+gboolean mbim_message_response_get_result (const MbimMessage  *self,
+                                           MbimMessageType     expected,
+                                           GError            **error);
 
 G_END_DECLS
 
