@@ -246,6 +246,16 @@ mbim-message
 @Returns: 
 
 
+<!-- ##### FUNCTION mbim_message_function_error_new ##### -->
+<para>
+
+</para>
+
+@transaction_id: 
+@error_status_code: 
+@Returns: 
+
+
 <!-- ##### FUNCTION mbim_message_error_get_error_status_code ##### -->
 <para>
 
@@ -431,6 +441,17 @@ mbim-message
 
 @self: 
 @length: 
+@Returns: 
+
+
+<!-- ##### FUNCTION mbim_message_response_get_result ##### -->
+<para>
+
+</para>
+
+@self: 
+@expected: 
+@error: 
 @Returns: 
 
 

@@ -25,12 +25,14 @@
 #include <string.h>
 #include <ctype.h>
 #include <sys/file.h>
+#include <sys/types.h>
 #include <errno.h>
 
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <gio/gunixsocketaddress.h>
 
+#include "config.h"
 #include "mbim-device.h"
 #include "mbim-utils.h"
 #include "mbim-proxy.h"
@@ -124,6 +126,7 @@ typedef struct {
 
     MbimDevice *device;
     guint indication_id;
+    guint function_error_id;
     gboolean service_subscriber_list_enabled;
     MbimEventEntry **mbim_event_entry_array;
     gsize mbim_event_entry_array_size;
@@ -153,6 +156,9 @@ client_disconnect (Client *client)
 static void client_indication_cb (MbimDevice *device,
                                   MbimMessage *message,
                                   Client *client);
+static void client_error_cb      (MbimDevice *device,
+                                  GError     *error,
+                                  Client     *client);
 
 static void
 client_set_device (Client *client,
@@ -161,6 +167,8 @@ client_set_device (Client *client,
     if (client->device) {
         if (g_signal_handler_is_connected (client->device, client->indication_id))
             g_signal_handler_disconnect (client->device, client->indication_id);
+        if (g_signal_handler_is_connected (client->device, client->function_error_id))
+            g_signal_handler_disconnect (client->device, client->function_error_id);
         g_object_unref (client->device);
     }
 
@@ -170,9 +178,14 @@ client_set_device (Client *client,
                                                   MBIM_DEVICE_SIGNAL_INDICATE_STATUS,
                                                   G_CALLBACK (client_indication_cb),
                                                   client);
+        client->function_error_id = g_signal_connect (client->device,
+                                                      MBIM_DEVICE_SIGNAL_ERROR,
+                                                      G_CALLBACK (client_error_cb),
+                                                      client);
     } else {
         client->device = NULL;
         client->indication_id = 0;
+        client->function_error_id = 0;
     }
 }
 
@@ -303,6 +316,20 @@ client_indication_cb (MbimDevice *device,
             g_warning ("couldn't forward indication to client");
             g_error_free (error);
         }
+    }
+}
+
+/*****************************************************************************/
+/* Handling generic function errors */
+
+static void
+client_error_cb (MbimDevice *device,
+                 GError     *error,
+                 Client     *client)
+{
+    if (g_error_matches (error, MBIM_PROTOCOL_ERROR, MBIM_PROTOCOL_ERROR_NOT_OPENED)) {
+        g_debug ("Device not opened error reported, forcing close");
+        mbim_device_close_force (device, NULL);
     }
 }
 
@@ -809,6 +836,13 @@ device_service_subscribe_list_set_ready (MbimDevice   *device,
 
     tmp_response = mbim_device_command_finish (device, res, &error);
     if (!tmp_response) {
+        /* Translate a MbimDevice wrong state error into a Not-Opened function error. */
+        if (g_error_matches (error, MBIM_CORE_ERROR, MBIM_CORE_ERROR_WRONG_STATE)) {
+            request->response = mbim_message_function_error_new (mbim_message_get_transaction_id (request->message), MBIM_PROTOCOL_ERROR_NOT_OPENED);
+            request_complete_and_free (request);
+            return;
+        }
+
         g_debug ("sending request to device failed: %s", error->message);
         g_error_free (error);
         /* Don't disconnect client, just let the request timeout in its side */
@@ -883,6 +917,13 @@ device_command_ready (MbimDevice *device,
 
     request->response = mbim_device_command_finish (device, res, &error);
     if (!request->response) {
+        /* Translate a MbimDevice wrong state error into a Not-Opened function error. */
+        if (g_error_matches (error, MBIM_CORE_ERROR, MBIM_CORE_ERROR_WRONG_STATE)) {
+            request->response = mbim_message_function_error_new (request->original_transaction_id, MBIM_PROTOCOL_ERROR_NOT_OPENED);
+            request_complete_and_free (request);
+            return;
+        }
+
         g_debug ("sending request to device failed: %s", error->message);
         g_error_free (error);
         /* Don't disconnect client, just let the request timeout in its side */
@@ -1060,10 +1101,12 @@ incoming_cb (GSocketService *service,
         return;
     }
 
-    if (uid != 0) {
-        g_warning ("Client not allowed: Not enough privileges");
+    if (!__mbim_user_allowed (uid, &error)) {
+        g_warning ("Client not allowed: %s", error->message);
+        g_error_free (error);
         return;
     }
+
 
     /* Create client */
     client = g_slice_new0 (Client);
@@ -1077,7 +1120,7 @@ incoming_cb (GSocketService *service,
                            (GSourceFunc)connection_readable_cb,
                            client,
                            NULL);
-    g_source_attach (client->connection_readable_source, NULL);
+    g_source_attach (client->connection_readable_source, g_main_context_get_thread_default ());
 
     /* Keep the client info around */
     track_client (self, client);
@@ -1214,12 +1257,7 @@ mbim_proxy_new (GError **error)
 {
     MbimProxy *self;
 
-    /* Only root can run the mbim-proxy */
-    if (getuid () != 0) {
-        g_set_error (error,
-                     MBIM_CORE_ERROR,
-                     MBIM_CORE_ERROR_FAILED,
-                     "Not enough privileges");
+    if (!__mbim_user_allowed (getuid(), error)) {
         return NULL;
     }
 

@@ -1,6 +1,5 @@
 <ANCHOR id="libmbim-glib-Version-checks" href="libmbim-glib/libmbim-glib-Version-checks.html">
 <ANCHOR id="libmbim-glib-Version-checks.functions" href="libmbim-glib/libmbim-glib-Version-checks.html#libmbim-glib-Version-checks.functions">
-<ANCHOR id="libmbim-glib-Version-checks.object-hierarchy" href="libmbim-glib/libmbim-glib-Version-checks.html#libmbim-glib-Version-checks.object-hierarchy">
 <ANCHOR id="libmbim-glib-Version-checks.description" href="libmbim-glib/libmbim-glib-Version-checks.html#libmbim-glib-Version-checks.description">
 <ANCHOR id="libmbim-glib-Version-checks.functions_details" href="libmbim-glib/libmbim-glib-Version-checks.html#libmbim-glib-Version-checks.functions_details">
 <ANCHOR id="MBIM-MAJOR-VERSION:CAPS" href="libmbim-glib/libmbim-glib-Version-checks.html#MBIM-MAJOR-VERSION:CAPS">
@@ -98,6 +97,7 @@
 <ANCHOR id="mbim-message-close-done-get-status-code" href="libmbim-glib/MbimMessage.html#mbim-message-close-done-get-status-code">
 <ANCHOR id="mbim-message-close-done-get-result" href="libmbim-glib/MbimMessage.html#mbim-message-close-done-get-result">
 <ANCHOR id="mbim-message-error-new" href="libmbim-glib/MbimMessage.html#mbim-message-error-new">
+<ANCHOR id="mbim-message-function-error-new" href="libmbim-glib/MbimMessage.html#mbim-message-function-error-new">
 <ANCHOR id="mbim-message-error-get-error-status-code" href="libmbim-glib/MbimMessage.html#mbim-message-error-get-error-status-code">
 <ANCHOR id="mbim-message-error-get-error" href="libmbim-glib/MbimMessage.html#mbim-message-error-get-error">
 <ANCHOR id="mbim-message-command-new" href="libmbim-glib/MbimMessage.html#mbim-message-command-new">
@@ -118,6 +118,7 @@
 <ANCHOR id="mbim-message-indicate-status-get-service-id" href="libmbim-glib/MbimMessage.html#mbim-message-indicate-status-get-service-id">
 <ANCHOR id="mbim-message-indicate-status-get-cid" href="libmbim-glib/MbimMessage.html#mbim-message-indicate-status-get-cid">
 <ANCHOR id="mbim-message-indicate-status-get-raw-information-buffer" href="libmbim-glib/MbimMessage.html#mbim-message-indicate-status-get-raw-information-buffer">
+<ANCHOR id="mbim-message-response-get-result" href="libmbim-glib/MbimMessage.html#mbim-message-response-get-result">
 <ANCHOR id="MbimMessage.other_details" href="libmbim-glib/MbimMessage.html#MbimMessage.other_details">
 <ANCHOR id="MbimMessage-struct" href="libmbim-glib/MbimMessage.html#MbimMessage-struct">
 <ANCHOR id="MbimMessageType" href="libmbim-glib/MbimMessage.html#MbimMessageType">
@@ -304,7 +305,6 @@
 <ANCHOR id="MbimStatusError" href="libmbim-glib/libmbim-glib-Errors.html#MbimStatusError">
 <ANCHOR id="libmbim-glib-Common-utilities" href="libmbim-glib/libmbim-glib-Common-utilities.html">
 <ANCHOR id="libmbim-glib-Common-utilities.functions" href="libmbim-glib/libmbim-glib-Common-utilities.html#libmbim-glib-Common-utilities.functions">
-<ANCHOR id="libmbim-glib-Common-utilities.object-hierarchy" href="libmbim-glib/libmbim-glib-Common-utilities.html#libmbim-glib-Common-utilities.object-hierarchy">
 <ANCHOR id="libmbim-glib-Common-utilities.description" href="libmbim-glib/libmbim-glib-Common-utilities.html#libmbim-glib-Common-utilities.description">
 <ANCHOR id="libmbim-glib-Common-utilities.functions_details" href="libmbim-glib/libmbim-glib-Common-utilities.html#libmbim-glib-Common-utilities.functions_details">
 <ANCHOR id="mbim-utils-get-traces-enabled" href="libmbim-glib/libmbim-glib-Common-utilities.html#mbim-utils-get-traces-enabled">
@@ -313,7 +313,6 @@
 <ANCHOR id="libmbim-glib-Basic-Connect" href="libmbim-glib/libmbim-glib-Basic-Connect.html">
 <ANCHOR id="libmbim-glib-Basic-Connect.functions" href="libmbim-glib/libmbim-glib-Basic-Connect.html#libmbim-glib-Basic-Connect.functions">
 <ANCHOR id="libmbim-glib-Basic-Connect.other" href="libmbim-glib/libmbim-glib-Basic-Connect.html#libmbim-glib-Basic-Connect.other">
-<ANCHOR id="libmbim-glib-Basic-Connect.object-hierarchy" href="libmbim-glib/libmbim-glib-Basic-Connect.html#libmbim-glib-Basic-Connect.object-hierarchy">
 <ANCHOR id="libmbim-glib-Basic-Connect.description" href="libmbim-glib/libmbim-glib-Basic-Connect.html#libmbim-glib-Basic-Connect.description">
 <ANCHOR id="libmbim-glib-Basic-Connect.functions_details" href="libmbim-glib/libmbim-glib-Basic-Connect.html#libmbim-glib-Basic-Connect.functions_details">
 <ANCHOR id="mbim-pin-desc-free" href="libmbim-glib/libmbim-glib-Basic-Connect.html#mbim-pin-desc-free">
@@ -405,7 +404,6 @@
 <ANCHOR id="libmbim-glib-SMS" href="libmbim-glib/libmbim-glib-SMS.html">
 <ANCHOR id="libmbim-glib-SMS.functions" href="libmbim-glib/libmbim-glib-SMS.html#libmbim-glib-SMS.functions">
 <ANCHOR id="libmbim-glib-SMS.other" href="libmbim-glib/libmbim-glib-SMS.html#libmbim-glib-SMS.other">
-<ANCHOR id="libmbim-glib-SMS.object-hierarchy" href="libmbim-glib/libmbim-glib-SMS.html#libmbim-glib-SMS.object-hierarchy">
 <ANCHOR id="libmbim-glib-SMS.description" href="libmbim-glib/libmbim-glib-SMS.html#libmbim-glib-SMS.description">
 <ANCHOR id="libmbim-glib-SMS.functions_details" href="libmbim-glib/libmbim-glib-SMS.html#libmbim-glib-SMS.functions_details">
 <ANCHOR id="mbim-sms-pdu-read-record-array-free" href="libmbim-glib/libmbim-glib-SMS.html#mbim-sms-pdu-read-record-array-free">
@@ -432,7 +430,6 @@
 <ANCHOR id="MbimSmsCdmaSendRecord" href="libmbim-glib/libmbim-glib-SMS.html#MbimSmsCdmaSendRecord">
 <ANCHOR id="libmbim-glib-USSD" href="libmbim-glib/libmbim-glib-USSD.html">
 <ANCHOR id="libmbim-glib-USSD.functions" href="libmbim-glib/libmbim-glib-USSD.html#libmbim-glib-USSD.functions">
-<ANCHOR id="libmbim-glib-USSD.object-hierarchy" href="libmbim-glib/libmbim-glib-USSD.html#libmbim-glib-USSD.object-hierarchy">
 <ANCHOR id="libmbim-glib-USSD.description" href="libmbim-glib/libmbim-glib-USSD.html#libmbim-glib-USSD.description">
 <ANCHOR id="libmbim-glib-USSD.functions_details" href="libmbim-glib/libmbim-glib-USSD.html#libmbim-glib-USSD.functions_details">
 <ANCHOR id="mbim-message-ussd-set-new" href="libmbim-glib/libmbim-glib-USSD.html#mbim-message-ussd-set-new">
@@ -441,7 +438,6 @@
 <ANCHOR id="libmbim-glib-USSD.other_details" href="libmbim-glib/libmbim-glib-USSD.html#libmbim-glib-USSD.other_details">
 <ANCHOR id="libmbim-glib-Auth" href="libmbim-glib/libmbim-glib-Auth.html">
 <ANCHOR id="libmbim-glib-Auth.functions" href="libmbim-glib/libmbim-glib-Auth.html#libmbim-glib-Auth.functions">
-<ANCHOR id="libmbim-glib-Auth.object-hierarchy" href="libmbim-glib/libmbim-glib-Auth.html#libmbim-glib-Auth.object-hierarchy">
 <ANCHOR id="libmbim-glib-Auth.description" href="libmbim-glib/libmbim-glib-Auth.html#libmbim-glib-Auth.description">
 <ANCHOR id="libmbim-glib-Auth.functions_details" href="libmbim-glib/libmbim-glib-Auth.html#libmbim-glib-Auth.functions_details">
 <ANCHOR id="mbim-message-auth-aka-query-new" href="libmbim-glib/libmbim-glib-Auth.html#mbim-message-auth-aka-query-new">
@@ -454,7 +450,6 @@
 <ANCHOR id="libmbim-glib-Phonebook" href="libmbim-glib/libmbim-glib-Phonebook.html">
 <ANCHOR id="libmbim-glib-Phonebook.functions" href="libmbim-glib/libmbim-glib-Phonebook.html#libmbim-glib-Phonebook.functions">
 <ANCHOR id="libmbim-glib-Phonebook.other" href="libmbim-glib/libmbim-glib-Phonebook.html#libmbim-glib-Phonebook.other">
-<ANCHOR id="libmbim-glib-Phonebook.object-hierarchy" href="libmbim-glib/libmbim-glib-Phonebook.html#libmbim-glib-Phonebook.object-hierarchy">
 <ANCHOR id="libmbim-glib-Phonebook.description" href="libmbim-glib/libmbim-glib-Phonebook.html#libmbim-glib-Phonebook.description">
 <ANCHOR id="libmbim-glib-Phonebook.functions_details" href="libmbim-glib/libmbim-glib-Phonebook.html#libmbim-glib-Phonebook.functions_details">
 <ANCHOR id="mbim-phonebook-entry-array-free" href="libmbim-glib/libmbim-glib-Phonebook.html#mbim-phonebook-entry-array-free">
@@ -471,7 +466,6 @@
 <ANCHOR id="MbimPhonebookEntry" href="libmbim-glib/libmbim-glib-Phonebook.html#MbimPhonebookEntry">
 <ANCHOR id="libmbim-glib-STK" href="libmbim-glib/libmbim-glib-STK.html">
 <ANCHOR id="libmbim-glib-STK.functions" href="libmbim-glib/libmbim-glib-STK.html#libmbim-glib-STK.functions">
-<ANCHOR id="libmbim-glib-STK.object-hierarchy" href="libmbim-glib/libmbim-glib-STK.html#libmbim-glib-STK.object-hierarchy">
 <ANCHOR id="libmbim-glib-STK.description" href="libmbim-glib/libmbim-glib-STK.html#libmbim-glib-STK.description">
 <ANCHOR id="libmbim-glib-STK.functions_details" href="libmbim-glib/libmbim-glib-STK.html#libmbim-glib-STK.functions_details">
 <ANCHOR id="mbim-message-stk-pac-query-new" href="libmbim-glib/libmbim-glib-STK.html#mbim-message-stk-pac-query-new">
@@ -486,7 +480,6 @@
 <ANCHOR id="libmbim-glib-STK.other_details" href="libmbim-glib/libmbim-glib-STK.html#libmbim-glib-STK.other_details">
 <ANCHOR id="libmbim-glib-DSS" href="libmbim-glib/libmbim-glib-DSS.html">
 <ANCHOR id="libmbim-glib-DSS.functions" href="libmbim-glib/libmbim-glib-DSS.html#libmbim-glib-DSS.functions">
-<ANCHOR id="libmbim-glib-DSS.object-hierarchy" href="libmbim-glib/libmbim-glib-DSS.html#libmbim-glib-DSS.object-hierarchy">
 <ANCHOR id="libmbim-glib-DSS.description" href="libmbim-glib/libmbim-glib-DSS.html#libmbim-glib-DSS.description">
 <ANCHOR id="libmbim-glib-DSS.functions_details" href="libmbim-glib/libmbim-glib-DSS.html#libmbim-glib-DSS.functions_details">
 <ANCHOR id="mbim-message-dss-connect-set-new" href="libmbim-glib/libmbim-glib-DSS.html#mbim-message-dss-connect-set-new">
@@ -494,7 +487,6 @@
 <ANCHOR id="libmbim-glib-DSS.other_details" href="libmbim-glib/libmbim-glib-DSS.html#libmbim-glib-DSS.other_details">
 <ANCHOR id="libmbim-glib-MS-Firmware-ID" href="libmbim-glib/libmbim-glib-MS-Firmware-ID.html">
 <ANCHOR id="libmbim-glib-MS-Firmware-ID.functions" href="libmbim-glib/libmbim-glib-MS-Firmware-ID.html#libmbim-glib-MS-Firmware-ID.functions">
-<ANCHOR id="libmbim-glib-MS-Firmware-ID.object-hierarchy" href="libmbim-glib/libmbim-glib-MS-Firmware-ID.html#libmbim-glib-MS-Firmware-ID.object-hierarchy">
 <ANCHOR id="libmbim-glib-MS-Firmware-ID.description" href="libmbim-glib/libmbim-glib-MS-Firmware-ID.html#libmbim-glib-MS-Firmware-ID.description">
 <ANCHOR id="libmbim-glib-MS-Firmware-ID.functions_details" href="libmbim-glib/libmbim-glib-MS-Firmware-ID.html#libmbim-glib-MS-Firmware-ID.functions_details">
 <ANCHOR id="mbim-message-ms-firmware-id-get-query-new" href="libmbim-glib/libmbim-glib-MS-Firmware-ID.html#mbim-message-ms-firmware-id-get-query-new">
@@ -502,7 +494,6 @@
 <ANCHOR id="libmbim-glib-MS-Firmware-ID.other_details" href="libmbim-glib/libmbim-glib-MS-Firmware-ID.html#libmbim-glib-MS-Firmware-ID.other_details">
 <ANCHOR id="libmbim-glib-MS-Host-Shutdown" href="libmbim-glib/libmbim-glib-MS-Host-Shutdown.html">
 <ANCHOR id="libmbim-glib-MS-Host-Shutdown.functions" href="libmbim-glib/libmbim-glib-MS-Host-Shutdown.html#libmbim-glib-MS-Host-Shutdown.functions">
-<ANCHOR id="libmbim-glib-MS-Host-Shutdown.object-hierarchy" href="libmbim-glib/libmbim-glib-MS-Host-Shutdown.html#libmbim-glib-MS-Host-Shutdown.object-hierarchy">
 <ANCHOR id="libmbim-glib-MS-Host-Shutdown.description" href="libmbim-glib/libmbim-glib-MS-Host-Shutdown.html#libmbim-glib-MS-Host-Shutdown.description">
 <ANCHOR id="libmbim-glib-MS-Host-Shutdown.functions_details" href="libmbim-glib/libmbim-glib-MS-Host-Shutdown.html#libmbim-glib-MS-Host-Shutdown.functions_details">
 <ANCHOR id="mbim-message-ms-host-shutdown-notify-set-new" href="libmbim-glib/libmbim-glib-MS-Host-Shutdown.html#mbim-message-ms-host-shutdown-notify-set-new">
@@ -510,7 +501,6 @@
 <ANCHOR id="libmbim-glib-Deprecated-API" href="libmbim-glib/libmbim-glib-Deprecated-API.html">
 <ANCHOR id="libmbim-glib-Deprecated-API.functions" href="libmbim-glib/libmbim-glib-Deprecated-API.html#libmbim-glib-Deprecated-API.functions">
 <ANCHOR id="libmbim-glib-Deprecated-API.other" href="libmbim-glib/libmbim-glib-Deprecated-API.html#libmbim-glib-Deprecated-API.other">
-<ANCHOR id="libmbim-glib-Deprecated-API.object-hierarchy" href="libmbim-glib/libmbim-glib-Deprecated-API.html#libmbim-glib-Deprecated-API.object-hierarchy">
 <ANCHOR id="libmbim-glib-Deprecated-API.description" href="libmbim-glib/libmbim-glib-Deprecated-API.html#libmbim-glib-Deprecated-API.description">
 <ANCHOR id="libmbim-glib-Deprecated-API.functions_details" href="libmbim-glib/libmbim-glib-Deprecated-API.html#libmbim-glib-Deprecated-API.functions_details">
 <ANCHOR id="mbim-message-device-service-subscriber-list-response-parse" href="libmbim-glib/libmbim-glib-Deprecated-API.html#mbim-message-device-service-subscriber-list-response-parse">

@@ -14,6 +14,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -81,6 +82,7 @@ host_triplet = @host@
 libexec_PROGRAMS = mbim-proxy$(EXEEXT)
 subdir = src/mbim-proxy
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
+	$(srcdir)/76-mbim-proxy-device-ownership.rules.in \
 	$(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/compiler-warnings.m4 \
@@ -92,9 +94,10 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = 76-mbim-proxy-device-ownership.rules
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(libexecdir)"
+am__installdirs = "$(DESTDIR)$(libexecdir)" \
+	"$(DESTDIR)$(udevrulesdir)"
 PROGRAMS = $(libexec_PROGRAMS)
 am_mbim_proxy_OBJECTS = mbim_proxy-mbim-proxy.$(OBJEXT)
 mbim_proxy_OBJECTS = $(am_mbim_proxy_OBJECTS)
@@ -146,6 +149,34 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__uninstall_files_from_dir = { \
+  test -z "$$files" \
+    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
+    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
+         $(am__cd) "$$dir" && rm -f $$files; }; \
+  }
+DATA = $(udevrules_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -229,6 +260,7 @@ MBIM_GLIB_LT_REVISION = @MBIM_GLIB_LT_REVISION@
 MBIM_MAJOR_VERSION = @MBIM_MAJOR_VERSION@
 MBIM_MICRO_VERSION = @MBIM_MICRO_VERSION@
 MBIM_MINOR_VERSION = @MBIM_MINOR_VERSION@
+MBIM_USERNAME = @MBIM_USERNAME@
 MBIM_VERSION = @MBIM_VERSION@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
@@ -253,6 +285,7 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+UDEV_BASE_DIR = @UDEV_BASE_DIR@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -319,6 +352,13 @@ mbim_proxy_LDADD = \
 	$(MBIMPROXY_LIBS) \
 	$(top_builddir)/src/libmbim-glib/libmbim-glib.la
 
+
+#Install udev rules only if configured with --enable-mbim-username
+@MBIM_USERNAME_ENABLED_TRUE@udevrulesdir = $(UDEV_BASE_DIR)/rules.d
+@MBIM_USERNAME_ENABLED_TRUE@udevrules_DATA = 76-mbim-proxy-device-ownership.rules
+EXTRA_DIST = \
+	76-mbim-proxy-device-ownership.rules.in
+
 all: all-am
 
 .SUFFIXES:
@@ -353,6 +393,8 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+76-mbim-proxy-device-ownership.rules: $(top_builddir)/config.status $(srcdir)/76-mbim-proxy-device-ownership.rules.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-libexecPROGRAMS: $(libexec_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(libexec_PROGRAMS)'; test -n "$(libexecdir)" || list=; \
@@ -455,6 +497,27 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-udevrulesDATA: $(udevrules_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(udevrules_DATA)'; test -n "$(udevrulesdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(udevrulesdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(udevrulesdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(udevrulesdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(udevrulesdir)" || exit $$?; \
+	done
+
+uninstall-udevrulesDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(udevrules_DATA)'; test -n "$(udevrulesdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(udevrulesdir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -540,9 +603,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(PROGRAMS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(libexecdir)"; do \
+	for dir in "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(udevrulesdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -598,7 +661,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-udevrulesDATA
 
 install-dvi: install-dvi-am
 
@@ -644,7 +707,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libexecPROGRAMS
+uninstall-am: uninstall-libexecPROGRAMS uninstall-udevrulesDATA
 
 .MAKE: install-am install-strip
 
@@ -657,11 +720,12 @@ uninstall-am: uninstall-libexecPROGRAMS
 	install-exec-am install-html install-html-am install-info \
 	install-info-am install-libexecPROGRAMS install-man \
 	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-libexecPROGRAMS
+	install-strip install-udevrulesDATA installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags tags-am uninstall uninstall-am uninstall-libexecPROGRAMS \
+	uninstall-udevrulesDATA
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

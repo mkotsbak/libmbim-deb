@@ -259,6 +259,7 @@ MBIM_GLIB_LT_REVISION = @MBIM_GLIB_LT_REVISION@
 MBIM_MAJOR_VERSION = @MBIM_MAJOR_VERSION@
 MBIM_MICRO_VERSION = @MBIM_MICRO_VERSION@
 MBIM_MINOR_VERSION = @MBIM_MINOR_VERSION@
+MBIM_USERNAME = @MBIM_USERNAME@
 MBIM_VERSION = @MBIM_VERSION@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
@@ -283,6 +284,7 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+UDEV_BASE_DIR = @UDEV_BASE_DIR@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -338,7 +340,10 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = . build-aux data src utils docs
 ACLOCAL_AMFLAGS = -I m4
-DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
+DISTCHECK_CONFIGURE_FLAGS = \
+	--with-udev-base-dir="$$dc_install_base" \
+	--enable-gtk-doc
+
 EXTRA_DIST = \
 	gtester.make \
 	COPYING.LIB
