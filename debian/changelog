@@ -1,3 +1,11 @@
+libmbim (1.12.2-1) experimental; urgency=low
+
+  * Imported Upstream version 1.12.2
+  * Update debian/libmbim-glib4.symbols for new upstream release.
+  * Update Debian standards version to the latest.
+
+ -- Marius B. Kotsbak <marius@kotsbak.com>  Sun, 01 Feb 2015 11:18:06 +0100
+
 libmbim (1.10.0-2) unstable; urgency=medium
 
   * Team upload.
